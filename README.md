@@ -1,6 +1,6 @@
-# LUMIQ AI — Production-Grade Intelligent AI Chatbot
+# LOKR AI — Production-Grade Intelligent AI Chatbot
 
-**LUMIQ AI** is a modern, production-style AI chatbot web application inspired by the usability of ChatGPT, featuring original branding, real-time web search capabilities, document intelligence, multi-turn conversational context, user authentication, profile customization, and theme toggling.
+**LOKR AI** is a modern, production-style AI chatbot web application inspired by the usability of ChatGPT, featuring original branding, real-time web search capabilities, document intelligence, multi-turn conversational context, user authentication, profile customization, and theme toggling.
 
 ---
 

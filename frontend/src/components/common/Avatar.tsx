@@ -39,7 +39,7 @@ export const Avatar: React.FC<AvatarProps> = ({ src, name = 'User', size = 'md',
           }}
         />
       ) : (
-        <div className="w-full h-full flex items-center justify-center bg-gradient-to-tr from-primary-600 to-secondary-500 text-white font-semibold">
+        <div className="w-full h-full flex items-center justify-center bg-neutral-800 text-white dark:bg-neutral-200 dark:text-neutral-900 font-semibold">
           {getInitials(name)}
         </div>
       )}

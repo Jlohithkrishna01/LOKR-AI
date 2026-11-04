@@ -1,8 +1,8 @@
 @echo off
-title LUMIQ AI - Backend
+title LOKR AI - Backend
 cd /d "%~dp0backend"
 echo ==============================================
-echo   Starting LUMIQ AI Backend Server...
+echo   Starting LOKR AI Backend Server...
 echo ==============================================
 if exist ".\venv\Scripts\python.exe" (
     ".\venv\Scripts\python.exe" run.py

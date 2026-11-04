@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 220" width="720" height="220" fill="none">
+  <defs>
+    <!-- Background Canvas -->
+    <radialGradient id="h-bg" cx="30%" cy="50%" r="80%">
+      <stop offset="0%" stop-color="#16172E" />
+      <stop offset="100%" stop-color="#0A0B14" />
+    </radialGradient>
+
+    <!-- Brand Signature Gradient (Indigo -> Purple -> Cyan) -->
+    <linearGradient id="lokr-h-tile" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366F1" />
+      <stop offset="55%" stop-color="#8B5CF6" />
+      <stop offset="100%" stop-color="#06B6D4" />
+    </linearGradient>
+
+    <!-- AI Gradient -->
+    <linearGradient id="lokr-h-text" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6366F1" />
+      <stop offset="50%" stop-color="#8B5CF6" />
+      <stop offset="100%" stop-color="#06B6D4" />
+    </linearGradient>
+
+    <!-- Drop Shadow -->
+    <filter id="h-tile-glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#6366F1" flood-opacity="0.38" />
+    </filter>
+
+    <filter id="h-pulse-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Background Base -->
+  <rect width="720" height="220" rx="32" fill="url(#h-bg)" />
+
+  <!-- Left: Logo Symbol (150x150 at x=45, y=35) -->
+  <g transform="translate(45, 35)" filter="url(#h-tile-glow)">
+    <rect x="0" y="0" width="150" height="150" rx="42" fill="url(#lokr-h-tile)" />
+    <rect x="2" y="2" width="146" height="146" rx="40" stroke="#FFFFFF" stroke-opacity="0.25" stroke-width="2" />
+
+    <!-- Stylized Modern 'L' AI Path -->
+    <path d="M47 36 V93 C47 102 54 109 63 109 H102 C105.5 109 108 106.5 108 103 C108 99.5 105.5 97 102 97 H65.5 C63 97 61 95 61 92.5 V36 C61 32.5 58.5 30 55 30 C51.5 30 47 32.5 47 36 Z" fill="#FFFFFF" />
+
+    <!-- Neural connection line -->
+    <line x1="61" y1="50" x2="93" y2="50" stroke="#FFFFFF" stroke-opacity="0.55" stroke-width="3.5" stroke-dasharray="4 4" stroke-linecap="round" />
+
+    <!-- Glowing Pulse Dot -->
+    <circle cx="104" cy="50" r="9" fill="#06B6D4" filter="url(#h-pulse-glow)" />
+    <circle cx="104" cy="50" r="5" fill="#FFFFFF" />
+  </g>
+
+  <!-- Right: "LOKR AI" Typography -->
+  <g transform="translate(230, 118)">
+    <text font-family="'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="64" letter-spacing="-1.5px">
+      <tspan fill="#FFFFFF">LOKR</tspan>
+      <tspan dx="16" fill="url(#lokr-h-text)">AI</tspan>
+    </text>
+    <text y="42" font-family="'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="600" font-size="14" letter-spacing="5px" fill="#94A3B8" fill-opacity="0.95">
+      INTELLIGENT AI ASSISTANT
+    </text>
+  </g>
+</svg>

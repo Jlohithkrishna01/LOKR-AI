@@ -13,9 +13,9 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-light-bg dark:bg-dark-bg text-gray-500">
-        <Loader2 className="w-8 h-8 animate-spin text-primary-500 mb-2" />
-        <span className="text-xs font-medium">Loading LUMIQ AI...</span>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-[#0d0d0d] text-neutral-500">
+        <Loader2 className="w-7 h-7 animate-spin text-neutral-800 dark:text-neutral-200 mb-2" />
+        <span className="text-xs font-medium">Loading LOKR AI...</span>
       </div>
     );
   }

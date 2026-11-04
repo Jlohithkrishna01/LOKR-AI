@@ -65,3 +65,21 @@ class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
     user: UserResponse
+
+class GoogleAuthRequest(BaseModel):
+    credential: Optional[str] = None
+    access_token: Optional[str] = None
+    code: Optional[str] = None
+
+class AppleUserName(BaseModel):
+    firstName: Optional[str] = None
+    lastName: Optional[str] = None
+
+class AppleUserData(BaseModel):
+    name: Optional[AppleUserName] = None
+    email: Optional[str] = None
+
+class AppleAuthRequest(BaseModel):
+    id_token: str
+    code: Optional[str] = None
+    user: Optional[AppleUserData] = None

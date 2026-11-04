@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User } from '../types';
 import { api, getToken, setToken, removeToken } from '../services/api';
+import { signInWithGoogle, signInWithApple } from '../services/socialAuth';
 
 interface AuthContextType {
   user: User | null;
@@ -10,6 +11,9 @@ interface AuthContextType {
   login: (credentials: any) => Promise<void>;
   signup: (data: any) => Promise<void>;
   loginAsGuest: () => void;
+  loginWithGoogle: () => Promise<void>;
+  loginWithGoogleCredential: (credential: string) => Promise<void>;
+  loginWithApple: () => Promise<void>;
   logout: () => void;
   updateUser: (user: User) => void;
   refreshUser: () => Promise<void>;
@@ -32,9 +36,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (currentToken === 'demo-guest-token') {
       setUser({
         id: 9999,
-        email: 'guest@lumiq.ai',
+        email: 'guest@lokr.ai',
         name: 'Guest Explorer',
-        bio: 'Exploring LUMIQ AI in interactive Demo Mode on GitHub Pages.',
+        bio: 'Exploring LOKR AI in interactive Demo Mode on GitHub Pages.',
         profile_image: null,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
@@ -76,9 +80,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const loginAsGuest = () => {
     const guestUser: User = {
       id: 9999,
-      email: 'guest@lumiq.ai',
+      email: 'guest@lokr.ai',
       name: 'Guest Explorer',
-      bio: 'Exploring LUMIQ AI in interactive Demo Mode on GitHub Pages.',
+      bio: 'Exploring LOKR AI in interactive Demo Mode on GitHub Pages.',
       profile_image: null,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
@@ -87,6 +91,48 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setToken(guestToken);
     setTokenState(guestToken);
     setUser(guestUser);
+  };
+
+  const loginWithGoogle = async () => {
+    setIsLoading(true);
+    try {
+      const { access_token } = await signInWithGoogle();
+      const res = await api.loginWithGoogle({ access_token });
+      setToken(res.access_token);
+      setTokenState(res.access_token);
+      setUser(res.user);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const loginWithGoogleCredential = async (credential: string) => {
+    setIsLoading(true);
+    try {
+      const res = await api.loginWithGoogle({ credential });
+      setToken(res.access_token);
+      setTokenState(res.access_token);
+      setUser(res.user);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const loginWithApple = async () => {
+    setIsLoading(true);
+    try {
+      const appleData = await signInWithApple();
+      const res = await api.loginWithApple({
+        id_token: appleData.id_token,
+        code: appleData.code,
+        user: appleData.user,
+      });
+      setToken(res.access_token);
+      setTokenState(res.access_token);
+      setUser(res.user);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const logout = () => {
@@ -111,6 +157,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         login,
         signup,
         loginAsGuest,
+        loginWithGoogle,
+        loginWithGoogleCredential,
+        loginWithApple,
         logout,
         updateUser,
         refreshUser,

@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1254 1520" width="1254" height="1520" fill="none">
+  <defs>
+    <!-- Dark Blue Vignette Canvas matching the image background -->
+    <radialGradient id="bg" cx="50%" cy="40%" r="65%">
+      <stop offset="0%" stop-color="#081636" />
+      <stop offset="65%" stop-color="#030717" />
+      <stop offset="100%" stop-color="#01030B" />
+    </radialGradient>
+
+    <!-- Metallic Golden Lighting Gradient for Text -->
+    <linearGradient id="gold-text" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF9C4" />
+      <stop offset="25%" stop-color="#FDE047" />
+      <stop offset="65%" stop-color="#F59E0B" />
+      <stop offset="100%" stop-color="#D97706" />
+    </linearGradient>
+
+    <!-- Golden Neon Glow Filter -->
+    <filter id="gold-glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="16" flood-color="#F59E0B" flood-opacity="0.65" />
+      <feDropShadow dx="0" dy="2" stdDeviation="5" flood-color="#FDE047" flood-opacity="0.95" />
+    </filter>
+  </defs>
+
+  <!-- Deep Background matching the icon -->
+  <rect width="1254" height="1520" fill="url(#bg)" />
+
+  <!-- The Exact Golden Knot Neon Icon -->
+  <image href="file:///C:/Users/jangi/Downloads/Golden Knot Neon App Icon.png" x="77" y="40" width="1100" height="1100" preserveAspectRatio="xMidYMid meet" />
+
+  <!-- The Brand Name Text: LOKR AI - Perfectly Centered, Sharp, Metallic Gold Glow -->
+  <g transform="translate(627, 1270)" filter="url(#gold-glow)">
+    <text text-anchor="middle" font-family="'Segoe UI', 'Inter', system-ui, sans-serif" font-weight="900" font-size="116" letter-spacing="8px" fill="url(#gold-text)">
+      LOKR AI
+    </text>
+  </g>
+
+  <!-- Subtitle Tagline - Perfectly Centered -->
+  <g transform="translate(627, 1360)">
+    <text text-anchor="middle" font-family="'Segoe UI', 'Inter', system-ui, sans-serif" font-weight="600" font-size="24" letter-spacing="14px" fill="#60A5FA" fill-opacity="0.9">
+      INTELLIGENT AI ASSISTANT
+    </text>
+  </g>
+</svg>

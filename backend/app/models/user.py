@@ -9,9 +9,13 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(120), nullable=False)
     email = Column(String(191), unique=True, index=True, nullable=False)
-    password_hash = Column(String(255), nullable=False)
-    profile_image = Column(String(255), nullable=True)
+    password_hash = Column(String(255), nullable=True)
+    profile_image = Column(String(500), nullable=True)
     bio = Column(String(255), nullable=True)
+    provider = Column(String(50), default="email", nullable=False)
+    provider_id = Column(String(255), nullable=True, index=True)
+    google_id = Column(String(255), nullable=True, index=True)
+    apple_id = Column(String(255), nullable=True, index=True)
     reset_token = Column(String(255), nullable=True, index=True)
     reset_token_expiry = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
@@ -19,6 +23,11 @@ class User(Base):
 
     conversations = relationship("Conversation", back_populates="user", cascade="all, delete-orphan")
     settings = relationship("UserSettings", back_populates="user", uselist=False, cascade="all, delete-orphan")
+
+    @property
+    def preferred_name(self):
+        from app.services.greeting_service import extract_preferred_name
+        return extract_preferred_name(self.name)
 
 class UserSettings(Base):
     __tablename__ = "user_settings"

@@ -7,9 +7,6 @@ import {
   Sun,
   Moon,
   Laptop,
-  Check,
-  Loader2,
-  Trash2,
   AlertTriangle,
 } from 'lucide-react';
 import { Modal } from '../common/Modal';
@@ -46,9 +43,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   });
 
   const [isLoading, setIsLoading] = useState(false);
-  const [saveSuccess, setSaveSuccess] = useState(false);
   const [deletePassword, setDeletePassword] = useState('');
-  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -71,8 +66,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     setSettings(updated);
     try {
       await api.updateSettings({ [key]: value });
-      setSaveSuccess(true);
-      setTimeout(() => setSaveSuccess(false), 2000);
     } catch (err) {
       console.error('Failed to save setting:', err);
     }
@@ -117,15 +110,15 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     <Modal isOpen={isOpen} onClose={onClose} title="Settings" maxWidth="max-w-2xl">
       <div className="flex flex-col sm:flex-row gap-6 min-h-[380px]">
         {/* Navigation Tabs (Sidebar style) */}
-        <div className="sm:w-44 flex sm:flex-col gap-1 border-b sm:border-b-0 sm:border-r border-gray-100 dark:border-dark-border pb-3 sm:pb-0 sm:pr-3 shrink-0 overflow-x-auto">
+        <div className="sm:w-44 flex sm:flex-col gap-1 border-b sm:border-b-0 sm:border-r border-neutral-200 dark:border-neutral-800 pb-3 sm:pb-0 sm:pr-3 shrink-0 overflow-x-auto">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold transition-colors text-left shrink-0 ${
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium transition-colors text-left shrink-0 ${
                 activeTab === tab.id
-                  ? 'bg-primary-500/10 text-primary-600 dark:text-primary-400 font-bold'
-                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-dark-card hover:text-gray-900 dark:hover:text-white'
+                  ? 'bg-black text-white dark:bg-white dark:text-black font-semibold'
+                  : 'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-[#252525] hover:text-neutral-900 dark:hover:text-white'
               }`}
             >
               {tab.icon}
@@ -140,28 +133,28 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           {activeTab === 'account' && (
             <div className="space-y-4">
               <div>
-                <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">
+                <h4 className="text-sm font-semibold text-neutral-900 dark:text-white mb-1">
                   Account Details
                 </h4>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
+                <p className="text-xs text-neutral-500 dark:text-neutral-400">
                   Manage your personal account credentials.
                 </p>
               </div>
 
-              <div className="p-4 rounded-2xl bg-gray-50 dark:bg-dark-card border border-gray-100 dark:border-dark-border space-y-3">
+              <div className="p-4 rounded-2xl bg-neutral-50 dark:bg-[#212121] border border-neutral-200 dark:border-neutral-800 space-y-3">
                 <div>
-                  <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
+                  <label className="text-[11px] font-semibold text-neutral-400 uppercase tracking-wider">
                     Full Name
                   </label>
-                  <p className="text-sm font-medium text-gray-900 dark:text-white mt-0.5">
+                  <p className="text-sm font-medium text-neutral-900 dark:text-white mt-0.5">
                     {user?.name}
                   </p>
                 </div>
                 <div>
-                  <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
+                  <label className="text-[11px] font-semibold text-neutral-400 uppercase tracking-wider">
                     Email Address
                   </label>
-                  <p className="text-sm font-medium text-gray-900 dark:text-white mt-0.5">
+                  <p className="text-sm font-medium text-neutral-900 dark:text-white mt-0.5">
                     {user?.email}
                   </p>
                 </div>
@@ -175,7 +168,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       onOpenEditProfile();
                     }}
                     type="button"
-                    className="px-4 py-2 rounded-xl text-xs font-semibold bg-gray-100 dark:bg-dark-card text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-dark-cardHover transition-colors"
+                    className="px-4 py-2 rounded-xl text-xs font-semibold bg-neutral-100 dark:bg-[#252525] text-neutral-800 dark:text-neutral-200 hover:bg-neutral-200 dark:hover:bg-[#303030] transition-colors"
                   >
                     Edit Profile
                   </button>
@@ -187,7 +180,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       onOpenChangePassword();
                     }}
                     type="button"
-                    className="px-4 py-2 rounded-xl text-xs font-semibold bg-gray-100 dark:bg-dark-card text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-dark-cardHover transition-colors"
+                    className="px-4 py-2 rounded-xl text-xs font-semibold bg-neutral-100 dark:bg-[#252525] text-neutral-800 dark:text-neutral-200 hover:bg-neutral-200 dark:hover:bg-[#303030] transition-colors"
                   >
                     Change Password
                   </button>
@@ -200,11 +193,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           {activeTab === 'appearance' && (
             <div className="space-y-4">
               <div>
-                <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">
+                <h4 className="text-sm font-semibold text-neutral-900 dark:text-white mb-1">
                   Theme Preference
                 </h4>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Choose how LUMIQ AI looks to you.
+                <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                  Choose your interface appearance.
                 </p>
               </div>
 
@@ -215,14 +208,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     setTheme('light');
                     handleUpdateSetting('theme', 'light');
                   }}
-                  className={`flex flex-col items-center gap-2.5 p-4 rounded-2xl border transition-all text-center ${
+                  className={`flex flex-col items-center gap-2.5 p-4 rounded-2xl border transition-colors text-center ${
                     theme === 'light'
-                      ? 'border-primary-500 bg-primary-500/10 shadow-sm'
-                      : 'border-gray-200 dark:border-dark-border hover:bg-gray-50 dark:hover:bg-dark-card'
+                      ? 'border-neutral-900 dark:border-white bg-neutral-100 dark:bg-[#252525]'
+                      : 'border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-[#202020]'
                   }`}
                 >
-                  <Sun className="w-6 h-6 text-amber-500" />
-                  <span className="text-xs font-semibold text-gray-900 dark:text-white">
+                  <Sun className="w-5 h-5 text-neutral-800 dark:text-neutral-200" />
+                  <span className="text-xs font-medium text-neutral-900 dark:text-white">
                     Light
                   </span>
                 </button>
@@ -233,14 +226,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     setTheme('dark');
                     handleUpdateSetting('theme', 'dark');
                   }}
-                  className={`flex flex-col items-center gap-2.5 p-4 rounded-2xl border transition-all text-center ${
+                  className={`flex flex-col items-center gap-2.5 p-4 rounded-2xl border transition-colors text-center ${
                     theme === 'dark'
-                      ? 'border-primary-500 bg-primary-500/10 shadow-sm'
-                      : 'border-gray-200 dark:border-dark-border hover:bg-gray-50 dark:hover:bg-dark-card'
+                      ? 'border-neutral-900 dark:border-white bg-neutral-100 dark:bg-[#252525]'
+                      : 'border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-[#202020]'
                   }`}
                 >
-                  <Moon className="w-6 h-6 text-indigo-400" />
-                  <span className="text-xs font-semibold text-gray-900 dark:text-white">
+                  <Moon className="w-5 h-5 text-neutral-800 dark:text-neutral-200" />
+                  <span className="text-xs font-medium text-neutral-900 dark:text-white">
                     Dark
                   </span>
                 </button>
@@ -251,14 +244,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     setTheme('system');
                     handleUpdateSetting('theme', 'system');
                   }}
-                  className={`flex flex-col items-center gap-2.5 p-4 rounded-2xl border transition-all text-center ${
+                  className={`flex flex-col items-center gap-2.5 p-4 rounded-2xl border transition-colors text-center ${
                     theme === 'system'
-                      ? 'border-primary-500 bg-primary-500/10 shadow-sm'
-                      : 'border-gray-200 dark:border-dark-border hover:bg-gray-50 dark:hover:bg-dark-card'
+                      ? 'border-neutral-900 dark:border-white bg-neutral-100 dark:bg-[#252525]'
+                      : 'border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-[#202020]'
                   }`}
                 >
-                  <Laptop className="w-6 h-6 text-accent-500" />
-                  <span className="text-xs font-semibold text-gray-900 dark:text-white">
+                  <Laptop className="w-5 h-5 text-neutral-800 dark:text-neutral-200" />
+                  <span className="text-xs font-medium text-neutral-900 dark:text-white">
                     System
                   </span>
                 </button>
@@ -270,21 +263,21 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           {activeTab === 'chat' && (
             <div className="space-y-5">
               <div>
-                <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">
+                <h4 className="text-sm font-semibold text-neutral-900 dark:text-white mb-1">
                   Chat Preferences
                 </h4>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
+                <p className="text-xs text-neutral-500 dark:text-neutral-400">
                   Customize the chat interface and AI behavior.
                 </p>
               </div>
 
               {/* Enter to Send Toggle */}
-              <div className="flex items-center justify-between p-3.5 rounded-2xl bg-gray-50 dark:bg-dark-card border border-gray-100 dark:border-dark-border">
+              <div className="flex items-center justify-between p-3.5 rounded-2xl bg-neutral-50 dark:bg-[#212121] border border-neutral-200 dark:border-neutral-800">
                 <div>
-                  <p className="text-xs font-semibold text-gray-900 dark:text-white">
+                  <p className="text-xs font-semibold text-neutral-900 dark:text-white">
                     Enter key sends message
                   </p>
-                  <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">
+                  <p className="text-[11px] text-neutral-500 dark:text-neutral-400 mt-0.5">
                     When disabled, use Shift + Enter or the Send button
                   </p>
                 </div>
@@ -292,38 +285,40 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   type="checkbox"
                   checked={settings.enter_to_send}
                   onChange={(e) => handleUpdateSetting('enter_to_send', e.target.checked)}
-                  className="w-4 h-4 text-primary-600 rounded border-gray-300 focus:ring-primary-500"
+                  className="w-4 h-4 rounded text-neutral-900 dark:text-white border-neutral-300 dark:border-neutral-700"
                 />
               </div>
 
               {/* Timestamps Toggle */}
-              <div className="flex items-center justify-between p-3.5 rounded-2xl bg-gray-50 dark:bg-dark-card border border-gray-100 dark:border-dark-border">
+              <div className="flex items-center justify-between p-3.5 rounded-2xl bg-neutral-50 dark:bg-[#212121] border border-neutral-200 dark:border-neutral-800">
                 <div>
-                  <p className="text-xs font-semibold text-gray-900 dark:text-white">
+                  <p className="text-xs font-semibold text-neutral-900 dark:text-white">
                     Show message timestamps
                   </p>
-                  <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">
-                    Display time of delivery next to user and AI messages
+                  <p className="text-[11px] text-neutral-500 dark:text-neutral-400 mt-0.5">
+                    Display time of delivery next to messages
                   </p>
                 </div>
                 <input
                   type="checkbox"
                   checked={settings.show_timestamps}
                   onChange={(e) => handleUpdateSetting('show_timestamps', e.target.checked)}
-                  className="w-4 h-4 text-primary-600 rounded border-gray-300 focus:ring-primary-500"
+                  className="w-4 h-4 rounded text-neutral-900 dark:text-white border-neutral-300 dark:border-neutral-700"
                 />
               </div>
 
               {/* AI Model Selector */}
               <div>
-                <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
+                <label className="block text-xs font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
                   Default AI Model
                 </label>
                 <select
                   value={settings.default_model}
                   onChange={(e) => handleUpdateSetting('default_model', e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl text-xs bg-gray-50 dark:bg-dark-card border border-gray-200 dark:border-dark-border text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500/30"
+                  className="w-full px-3 py-2 rounded-xl text-xs bg-neutral-50 dark:bg-[#212121] border border-neutral-200 dark:border-neutral-800 text-neutral-900 dark:text-white focus:outline-none"
                 >
+                  <option value="claude-3-5-sonnet-20241022">Claude 3.5 Sonnet (Anthropic - State of the Art)</option>
+                  <option value="claude-3-5-haiku-20241022">Claude 3.5 Haiku (Anthropic - Ultra Fast)</option>
                   <option value="qwen/qwen3.8-27b">Qwen 3.8 27B (Fast, Highly Accurate)</option>
                   <option value="openai/gpt-oss-120b">GPT OSS 120B (Deep Reasoning)</option>
                   <option value="openai/gpt-oss-20b">GPT OSS 20B (Compact, Ultra Fast)</option>
@@ -332,16 +327,16 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
               {/* Custom System Prompt */}
               <div>
-                <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
+                <label className="block text-xs font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
                   Custom AI Instructions (Optional)
                 </label>
                 <textarea
                   value={settings.system_prompt || ''}
                   onChange={(e) => setSettings({ ...settings, system_prompt: e.target.value })}
                   onBlur={() => handleUpdateSetting('system_prompt', settings.system_prompt)}
-                  placeholder="e.g. Always respond in concise bullet points with Java 21 syntax..."
+                  placeholder="e.g. Always respond in concise bullet points..."
                   rows={2}
-                  className="w-full px-3.5 py-2 rounded-xl text-xs bg-gray-50 dark:bg-dark-card border border-gray-200 dark:border-dark-border text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500/30 resize-none"
+                  className="w-full px-3.5 py-2 rounded-xl text-xs bg-neutral-50 dark:bg-[#212121] border border-neutral-200 dark:border-neutral-800 text-neutral-900 dark:text-white focus:outline-none resize-none"
                 />
               </div>
             </div>
@@ -351,22 +346,22 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           {activeTab === 'privacy' && (
             <div className="space-y-5">
               <div>
-                <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">
+                <h4 className="text-sm font-semibold text-neutral-900 dark:text-white mb-1">
                   Privacy & Data Management
                 </h4>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
+                <p className="text-xs text-neutral-500 dark:text-neutral-400">
                   Control your conversation data and account lifecycle.
                 </p>
               </div>
 
               {/* Clear Chat History */}
-              <div className="p-4 rounded-2xl border border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-dark-card">
+              <div className="p-4 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-[#212121]">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h5 className="text-xs font-semibold text-gray-900 dark:text-white">
+                    <h5 className="text-xs font-semibold text-neutral-900 dark:text-white">
                       Clear all chat history
                     </h5>
-                    <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">
+                    <p className="text-[11px] text-neutral-500 dark:text-neutral-400 mt-0.5">
                       Permanently delete all previous conversations and messages.
                     </p>
                   </div>
@@ -386,8 +381,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
                   <div>
                     <h5 className="text-xs font-semibold">Delete Account</h5>
-                    <p className="text-[11px] text-gray-600 dark:text-gray-300 mt-0.5">
-                      Permanently delete your LUMIQ AI account and all stored history. This action cannot be reversed.
+                    <p className="text-[11px] text-neutral-600 dark:text-neutral-300 mt-0.5">
+                      Permanently delete your LOKR AI account and all stored history. This action cannot be reversed.
                     </p>
                   </div>
                 </div>
@@ -402,7 +397,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     value={deletePassword}
                     onChange={(e) => setDeletePassword(e.target.value)}
                     placeholder="Enter your current password to confirm"
-                    className="w-full px-3 py-2 rounded-xl text-xs bg-white dark:bg-dark-card border border-rose-500/40 text-gray-900 dark:text-white focus:outline-none"
+                    className="w-full px-3 py-2 rounded-xl text-xs bg-white dark:bg-[#181818] border border-rose-500/40 text-neutral-900 dark:text-white focus:outline-none"
                   />
                   <button
                     onClick={handleDeleteAccount}

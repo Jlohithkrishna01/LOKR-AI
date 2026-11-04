@@ -21,6 +21,7 @@ interface ChatContextType {
   streamingStatus: string | null;
   streamingSources: Source[];
   streamingContent: string;
+  streamingImage: { image_url: string; prompt: string } | null;
   searchTerm: string;
   setSearchTerm: (term: string) => void;
   loadConversations: (search?: string) => Promise<void>;
@@ -30,6 +31,7 @@ interface ChatContextType {
     content: string;
     fileInfo?: UploadedFileInfo | null;
     enableWebSearch?: boolean;
+    enableImageGeneration?: boolean;
     model?: string;
   }) => Promise<void>;
   stopGenerating: () => void;
@@ -55,6 +57,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [streamingStatus, setStreamingStatus] = useState<string | null>(null);
   const [streamingSources, setStreamingSources] = useState<Source[]>([]);
   const [streamingContent, setStreamingContent] = useState<string>('');
+  const [streamingImage, setStreamingImage] = useState<{ image_url: string; prompt: string } | null>(null);
 
   const abortControllerRef = useRef<AbortController | null>(null);
 
@@ -113,6 +116,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setStreamingContent('');
     setStreamingSources([]);
     setStreamingStatus(null);
+    setStreamingImage(null);
   };
 
   const stopGenerating = () => {
@@ -122,20 +126,23 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
     setIsStreaming(false);
     setStreamingStatus(null);
+    setStreamingImage(null);
   };
 
   const sendMessage = async ({
     content,
     fileInfo,
     enableWebSearch,
+    enableImageGeneration,
     model,
   }: {
     content: string;
     fileInfo?: UploadedFileInfo | null;
     enableWebSearch?: boolean;
+    enableImageGeneration?: boolean;
     model?: string;
   }) => {
-    if (!content.trim() && !fileInfo) return;
+    if ((!content.trim() && !fileInfo) || isStreaming) return;
 
     // Optimistic user message
     const tempUserMsgId = Date.now();
@@ -168,9 +175,11 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     setIsStreaming(true);
-    setStreamingStatus('Connecting...');
+
+    setStreamingStatus('LOKR AI is thinking...');
     setStreamingSources([]);
     setStreamingContent('');
+    setStreamingImage(null);
 
     const controller = new AbortController();
     abortControllerRef.current = controller;
@@ -178,6 +187,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     let accumulatedContent = '';
     let accumulatedSources: Source[] = [];
     let resolvedConvId = currentConversationId;
+    let generatedImgUrl: string | null = null;
 
     try {
       await api.streamChat(
@@ -189,6 +199,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
           file_type: fileInfo?.file_type,
           file_extracted_text: fileInfo?.extracted_text,
           enable_web_search: enableWebSearch,
+          enable_image_generation: enableImageGeneration,
           model,
         },
         {
@@ -215,6 +226,10 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
             accumulatedSources = sources;
             setStreamingSources(sources);
           },
+          onImage: (imgData) => {
+            generatedImgUrl = imgData.image_url;
+            setStreamingImage(imgData);
+          },
           onToken: (token) => {
             setStreamingStatus(null);
             accumulatedContent += token;
@@ -223,13 +238,18 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
           onDone: (doneData) => {
             setIsStreaming(false);
             setStreamingStatus(null);
+            const finalImgUrl = doneData.image_url || generatedImgUrl;
+            const finalContent = accumulatedContent.trim() || (finalImgUrl ? '' : "Sorry, I couldn't generate a response right now. Please try again.");
             const assistantMsg: Message = {
               id: doneData.message_id || Date.now(),
               conversation_id: doneData.conversation_id,
               role: 'assistant',
-              content: accumulatedContent,
+              content: finalContent,
               created_at: new Date().toISOString(),
               sources: doneData.sources || accumulatedSources,
+              file_url: finalImgUrl,
+              file_name: finalImgUrl ? 'Generated Image' : null,
+              file_type: finalImgUrl ? 'image' : null,
             };
 
             setCurrentConversation((prev) => {
@@ -244,6 +264,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
             setStreamingContent('');
             setStreamingSources([]);
+            setStreamingImage(null);
 
             // Refresh conversation list in sidebar
             loadConversations(searchTerm);
@@ -273,6 +294,24 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
       );
     } catch (err: any) {
       console.error('Streaming error caught:', err);
+      if (!accumulatedContent && err.name !== 'AbortError') {
+        const friendlyMsg: Message = {
+          id: Date.now(),
+          conversation_id: resolvedConvId || 0,
+          role: 'assistant',
+          content: `⚠️ **Unable to connect to LOKR AI**: ${err?.message || 'The server could not be reached. Please make sure the backend is running and try again.'}`,
+          created_at: new Date().toISOString(),
+          sources: [],
+        };
+        setCurrentConversation((prev) => {
+          if (!prev) return null;
+          if (prev.messages.some(m => m.id === friendlyMsg.id)) return prev;
+          return {
+            ...prev,
+            messages: [...prev.messages, friendlyMsg],
+          };
+        });
+      }
     } finally {
       setIsStreaming(false);
       setStreamingStatus(null);
@@ -381,6 +420,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
         streamingStatus,
         streamingSources,
         streamingContent,
+        streamingImage,
         searchTerm,
         setSearchTerm,
         loadConversations,

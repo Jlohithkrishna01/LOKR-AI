@@ -10,8 +10,6 @@ import {
   Settings as SettingsIcon,
   LogOut,
   ChevronLeft,
-  ChevronRight,
-  User as UserIcon,
 } from 'lucide-react';
 import { useChat } from '../../context/ChatContext';
 import { useAuth } from '../../context/AuthContext';
@@ -48,7 +46,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editingTitle, setEditingTitle] = useState('');
-  const [deletingId, setDeletingId] = useState<number | null>(null);
 
   const handleStartRename = (conv: Conversation, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -81,7 +78,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
     return (
       <div key={title} className="mb-4">
-        <h4 className="px-3 mb-1.5 text-[11px] font-semibold tracking-wider uppercase text-gray-400 dark:text-gray-500">
+        <h4 className="px-3 mb-1 text-[11px] font-semibold tracking-wider uppercase text-neutral-400 dark:text-neutral-500">
           {title}
         </h4>
         <div className="space-y-0.5">
@@ -93,12 +90,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <div
                 key={conv.id}
                 onClick={() => {
-                  if (!isEditing) selectConversation(conv.id);
+                  if (!isEditing) {
+                    selectConversation(conv.id);
+                    if (window.innerWidth < 1024) onToggle();
+                  }
                 }}
-                className={`group relative flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium cursor-pointer transition-all duration-150 ${
+                className={`group relative flex items-center justify-between px-3 py-2 rounded-xl text-sm cursor-pointer transition-colors duration-150 ${
                   isActive
-                    ? 'bg-primary-500/10 text-primary-600 dark:text-primary-400 font-semibold border border-primary-500/20'
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dark-cardHover'
+                    ? 'bg-neutral-200/75 dark:bg-[#262626] text-neutral-900 dark:text-white font-medium'
+                    : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-[#212121] hover:text-neutral-900 dark:hover:text-white'
                 }`}
               >
                 {isEditing ? (
@@ -112,18 +112,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       value={editingTitle}
                       onChange={(e) => setEditingTitle(e.target.value)}
                       autoFocus
-                      className="flex-1 px-2 py-1 text-xs rounded-lg bg-white dark:bg-dark-surface border border-primary-500 text-gray-900 dark:text-white focus:outline-none"
+                      className="flex-1 px-2 py-1 text-xs rounded-lg bg-white dark:bg-[#141414] border border-neutral-400 dark:border-neutral-600 text-neutral-900 dark:text-white focus:outline-none"
                     />
                     <button
                       type="submit"
-                      className="p-1 text-emerald-500 hover:text-emerald-600"
+                      className="p-1 text-emerald-600 hover:text-emerald-500"
+                      title="Save"
                     >
                       <Check className="w-3.5 h-3.5" />
                     </button>
                     <button
                       type="button"
                       onClick={handleCancelRename}
-                      className="p-1 text-gray-400 hover:text-gray-600"
+                      className="p-1 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200"
+                      title="Cancel"
                     >
                       <X className="w-3.5 h-3.5" />
                     </button>
@@ -131,7 +133,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 ) : (
                   <>
                     <div className="flex items-center gap-2.5 truncate flex-1 min-w-0 mr-2">
-                      <MessageSquare className={`w-4 h-4 shrink-0 ${isActive ? 'text-primary-500' : 'text-gray-400'}`} />
+                      <MessageSquare className={`w-4 h-4 shrink-0 ${isActive ? 'text-neutral-900 dark:text-white' : 'text-neutral-400 dark:text-neutral-500'}`} />
                       <span className="truncate">{conv.title}</span>
                     </div>
 
@@ -140,7 +142,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       <button
                         onClick={(e) => handleStartRename(conv, e)}
                         type="button"
-                        className="p-1 rounded-md text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-200 dark:hover:bg-dark-card transition-colors"
+                        className="p-1 rounded-md text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-200/80 dark:hover:bg-[#333333] transition-colors"
                         title="Rename conversation"
                       >
                         <Edit2 className="w-3.5 h-3.5" />
@@ -148,7 +150,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       <button
                         onClick={(e) => handleDelete(conv.id, e)}
                         type="button"
-                        className="p-1 rounded-md text-gray-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
+                        className="p-1 rounded-md text-neutral-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
                         title="Delete conversation"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -171,24 +173,24 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {/* Mobile Backdrop */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-30 lg:hidden backdrop-blur-sm"
+          className="fixed inset-0 bg-black/60 z-30 lg:hidden backdrop-blur-sm transition-opacity"
           onClick={onToggle}
         />
       )}
 
       {/* Sidebar Container */}
       <aside
-        className={`fixed lg:static top-0 bottom-0 left-0 z-40 flex flex-col w-72 bg-white dark:bg-[#0E1528] border-r border-gray-200 dark:border-dark-border transition-transform duration-300 ease-in-out shrink-0 ${
+        className={`fixed lg:static top-0 bottom-0 left-0 z-40 flex flex-col w-64 sm:w-72 bg-[#f9f9f9] dark:bg-[#171717] border-r border-neutral-200/80 dark:border-neutral-800/80 transition-transform duration-300 ease-in-out shrink-0 ${
           isOpen ? 'translate-x-0' : '-translate-x-full lg:hidden'
         }`}
       >
         {/* Top Header: Logo + Collapse Button */}
-        <div className="flex items-center justify-between px-4 py-4 border-b border-gray-100 dark:border-dark-border">
+        <div className="flex items-center justify-between px-4 py-3.5 border-b border-neutral-200/70 dark:border-neutral-800/70">
           <Logo size="md" />
           <button
             onClick={onToggle}
             type="button"
-            className="p-1.5 rounded-xl text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-dark-card transition-colors"
+            className="p-1.5 rounded-lg text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-200/60 dark:hover:bg-neutral-800 transition-colors"
             title="Collapse sidebar"
           >
             <ChevronLeft className="w-5 h-5" />
@@ -203,28 +205,30 @@ export const Sidebar: React.FC<SidebarProps> = ({
               if (window.innerWidth < 1024) onToggle();
             }}
             type="button"
-            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-primary-600 via-secondary-500 to-accent-500 hover:opacity-95 text-white font-semibold text-sm shadow-md shadow-primary-500/20 transition-all hover:scale-[1.01] active:scale-[0.99]"
+            className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl border border-neutral-200 dark:border-neutral-700/60 bg-white dark:bg-[#212121] hover:bg-neutral-100 dark:hover:bg-[#2a2a2a] text-neutral-900 dark:text-neutral-100 font-medium text-sm transition-colors shadow-sm"
           >
-            <Plus className="w-4 h-4" />
-            <span>New Chat</span>
+            <div className="flex items-center gap-2.5">
+              <Plus className="w-4 h-4 text-neutral-700 dark:text-neutral-300" />
+              <span>New chat</span>
+            </div>
           </button>
         </div>
 
         {/* Search Input Field */}
         <div className="px-3 mb-2">
           <div className="relative flex items-center">
-            <Search className="w-4 h-4 absolute left-3 text-gray-400 pointer-events-none" />
+            <Search className="w-3.5 h-3.5 absolute left-3 text-neutral-400 dark:text-neutral-500 pointer-events-none" />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search chats..."
-              className="w-full pl-9 pr-8 py-1.5 rounded-xl text-xs bg-gray-100 dark:bg-dark-card border border-transparent focus:border-primary-500 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none transition-colors"
+              className="w-full pl-8 pr-7 py-1.5 rounded-xl text-xs bg-white dark:bg-[#212121] border border-neutral-200 dark:border-neutral-700/60 focus:border-neutral-400 dark:focus:border-neutral-500 text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-500 focus:outline-none transition-colors"
             />
             {searchTerm && (
               <button
                 onClick={() => setSearchTerm('')}
-                className="absolute right-2.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                className="absolute right-2.5 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -235,13 +239,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Conversations History List */}
         <div className="flex-1 overflow-y-auto px-2 py-1">
           {!hasAnyConversations ? (
-            <div className="h-full flex flex-col items-center justify-center p-6 text-center text-gray-400">
-              <MessageSquare className="w-8 h-8 mb-2 opacity-40 text-primary-400" />
-              <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
+            <div className="h-full flex flex-col items-center justify-center p-6 text-center text-neutral-400">
+              <MessageSquare className="w-7 h-7 mb-2 opacity-30 text-neutral-500" />
+              <p className="text-xs font-medium text-neutral-600 dark:text-neutral-400">
                 No conversations yet
               </p>
-              <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-1">
-                Start a new conversation with LUMIQ AI.
+              <p className="text-[11px] text-neutral-400 dark:text-neutral-500 mt-1">
+                Start a new conversation with LOKR AI.
               </p>
             </div>
           ) : (
@@ -255,27 +259,27 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
 
         {/* Bottom Profile & Settings Section */}
-        <div className="p-3 border-t border-gray-100 dark:border-dark-border bg-gray-50/50 dark:bg-dark-surface/50">
+        <div className="p-3 border-t border-neutral-200/80 dark:border-neutral-800/80 bg-neutral-100/50 dark:bg-[#141414]">
           <div
             onClick={onOpenProfile}
-            className="flex items-center gap-3 p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-dark-card cursor-pointer transition-colors"
+            className="flex items-center gap-3 p-2 rounded-xl hover:bg-neutral-200/60 dark:hover:bg-[#212121] cursor-pointer transition-colors"
           >
             <Avatar src={user?.profile_image} name={user?.name} size="sm" />
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-semibold text-gray-900 dark:text-white truncate">
+              <p className="text-xs font-semibold text-neutral-900 dark:text-white truncate">
                 {user?.name}
               </p>
-              <p className="text-[11px] text-gray-400 truncate">
+              <p className="text-[11px] text-neutral-500 dark:text-neutral-400 truncate">
                 {user?.email}
               </p>
             </div>
           </div>
 
-          <div className="mt-2 flex items-center justify-between px-1">
+          <div className="mt-1 flex items-center justify-between px-1">
             <button
               onClick={onOpenSettings}
               type="button"
-              className="p-2 rounded-xl text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-dark-card transition-colors"
+              className="p-2 rounded-xl text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-200/60 dark:hover:bg-[#212121] transition-colors"
               title="Settings"
             >
               <SettingsIcon className="w-4 h-4" />
@@ -286,7 +290,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <button
               onClick={logout}
               type="button"
-              className="p-2 rounded-xl text-gray-500 dark:text-gray-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
+              className="p-2 rounded-xl text-neutral-500 dark:text-neutral-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
               title="Logout"
             >
               <LogOut className="w-4 h-4" />

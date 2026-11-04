@@ -9,6 +9,11 @@ class UserResponse(BaseModel):
     email: EmailStr
     profile_image: Optional[str] = None
     bio: Optional[str] = None
+    provider: Optional[str] = "email"
+    provider_id: Optional[str] = None
+    google_id: Optional[str] = None
+    apple_id: Optional[str] = None
+    preferred_name: Optional[str] = None
     created_at: datetime
     updated_at: datetime
 

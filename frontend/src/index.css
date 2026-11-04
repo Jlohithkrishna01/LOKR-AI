@@ -13,8 +13,18 @@
     padding: 0;
   }
 
+  html {
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
   body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
@@ -29,20 +39,20 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.3);
+  background: rgba(160, 160, 160, 0.25);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.5);
+  background: rgba(160, 160, 160, 0.45);
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  background: rgba(71, 85, 105, 0.4);
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: rgba(71, 85, 105, 0.7);
+  background: rgba(255, 255, 255, 0.3);
 }
 
 /* Markdown prose styling */
@@ -52,7 +62,7 @@
 }
 
 .markdown-body p {
-  margin-bottom: 0.85rem;
+  margin-bottom: 0.9rem;
 }
 
 .markdown-body p:last-child {
@@ -64,33 +74,35 @@
 .markdown-body h3,
 .markdown-body h4 {
   font-weight: 600;
-  margin-top: 1.25rem;
-  margin-bottom: 0.6rem;
+  margin-top: 1.35rem;
+  margin-bottom: 0.65rem;
   color: inherit;
+  line-height: 1.3;
 }
 
 .markdown-body h1 { font-size: 1.5rem; }
 .markdown-body h2 { font-size: 1.3rem; }
 .markdown-body h3 { font-size: 1.15rem; }
+.markdown-body h4 { font-size: 1rem; }
 
 .markdown-body ul {
   list-style-type: disc;
   padding-left: 1.4rem;
-  margin-bottom: 0.85rem;
+  margin-bottom: 0.9rem;
 }
 
 .markdown-body ol {
   list-style-type: decimal;
   padding-left: 1.4rem;
-  margin-bottom: 0.85rem;
+  margin-bottom: 0.9rem;
 }
 
 .markdown-body li {
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.35rem;
 }
 
 .markdown-body blockquote {
-  border-left: 3px solid #6366F1;
+  border-left: 3px solid #737373;
   padding-left: 1rem;
   margin: 1rem 0;
   font-style: italic;
@@ -106,32 +118,58 @@
 
 .markdown-body th,
 .markdown-body td {
-  padding: 0.5rem 0.75rem;
-  border: 1px solid rgba(148, 163, 184, 0.25);
+  padding: 0.55rem 0.85rem;
+  border: 1px solid rgba(128, 128, 128, 0.25);
   text-align: left;
 }
 
 .markdown-body th {
-  background: rgba(99, 102, 241, 0.08);
+  background: rgba(128, 128, 128, 0.08);
   font-weight: 600;
 }
 
 .markdown-body a {
-  color: #6366F1;
+  color: #0d0d0d;
+  font-weight: 500;
   text-decoration: underline;
   text-underline-offset: 3px;
+  transition: opacity 0.15s ease;
 }
 
 .markdown-body a:hover {
-  color: #8B5CF6;
+  opacity: 0.75;
 }
 
 .dark .markdown-body a {
-  color: #818CF8;
+  color: #f5f5f5;
 }
 
 .dark .markdown-body a:hover {
-  color: #A5B4FC;
+  opacity: 0.8;
+}
+
+/* Subtle typing dot bounce animations */
+@keyframes typing-bounce {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: 0.35;
+  }
+  30% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+.animate-typing-1 {
+  animation: typing-bounce 1.3s infinite ease-in-out 0s;
+}
+
+.animate-typing-2 {
+  animation: typing-bounce 1.3s infinite ease-in-out 0.2s;
+}
+
+.animate-typing-3 {
+  animation: typing-bounce 1.3s infinite ease-in-out 0.4s;
 }
 
 /* Pulsing loader animation */

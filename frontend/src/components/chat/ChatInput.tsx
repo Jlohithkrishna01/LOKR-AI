@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
-  Send,
+  ArrowUp,
   Square,
   Paperclip,
   Mic,
   MicOff,
   Globe,
+  Palette,
   Loader2,
   AlertCircle,
 } from 'lucide-react';
@@ -18,6 +19,7 @@ interface ChatInputProps {
     content: string;
     fileInfo?: UploadedFileInfo | null;
     enableWebSearch: boolean;
+    enableImageGeneration?: boolean;
   }) => void;
   onStop: () => void;
   isStreaming: boolean;
@@ -35,6 +37,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [enableWebSearch, setEnableWebSearch] = useState(false);
+  const [enableImageGeneration, setEnableImageGeneration] = useState(false);
   const [isListening, setIsListening] = useState(false);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -115,10 +118,12 @@ export const ChatInput: React.FC<ChatInputProps> = ({
       content: content.trim(),
       fileInfo,
       enableWebSearch,
+      enableImageGeneration,
     });
     setContent('');
     setFileInfo(null);
     setUploadError(null);
+    setEnableImageGeneration(false);
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
     }
@@ -147,7 +152,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   const canSubmit = (content.trim().length > 0 || !!fileInfo) && !isUploading;
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-4 pb-4 pt-2">
+    <div className="w-full max-w-3xl lg:max-w-4xl mx-auto px-4 pb-4 pt-1">
       {/* Upload Error Banner */}
       {uploadError && (
         <div className="mb-2 flex items-center gap-2 p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-500 text-xs">
@@ -157,7 +162,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
       )}
 
       {/* Main Input Container Card */}
-      <div className="relative rounded-2xl border border-gray-200 dark:border-dark-border bg-white dark:bg-dark-card shadow-lg shadow-gray-200/50 dark:shadow-black/40 transition-all focus-within:border-primary-500/80 focus-within:ring-2 focus-within:ring-primary-500/20">
+      <div className="relative rounded-2xl sm:rounded-3xl border border-neutral-300 dark:border-neutral-700/80 bg-white dark:bg-[#212121] shadow-sm focus-within:border-neutral-400 dark:focus-within:border-neutral-500 transition-colors">
         {/* Attached file preview chip */}
         {(fileInfo || isUploading) && (
           <div className="p-3 pb-0">
@@ -175,16 +180,20 @@ export const ChatInput: React.FC<ChatInputProps> = ({
           value={content}
           onChange={(e) => setContent(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Message LUMIQ AI..."
+          placeholder={
+            enableImageGeneration
+              ? "Describe an image to generate..."
+              : "Message LOKR AI..."
+          }
           rows={1}
-          className="w-full px-4 pt-3.5 pb-2 bg-transparent text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 resize-none focus:outline-none text-sm sm:text-base leading-relaxed"
+          className="w-full px-4 pt-3.5 pb-2 bg-transparent text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 dark:placeholder-neutral-500 resize-none focus:outline-none text-sm sm:text-base leading-relaxed"
           style={{ maxHeight: '200px' }}
         />
 
         {/* Bottom Toolbar & Action Buttons */}
-        <div className="flex items-center justify-between px-3 py-2 border-t border-gray-100 dark:border-dark-border/60">
+        <div className="flex items-center justify-between px-3 py-2 border-t border-neutral-100 dark:border-neutral-800/80">
           {/* Left Action Buttons */}
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1.5 flex-wrap">
             {/* File Upload Button */}
             <input
               ref={fileInputRef}
@@ -197,20 +206,41 @@ export const ChatInput: React.FC<ChatInputProps> = ({
               onClick={() => fileInputRef.current?.click()}
               type="button"
               disabled={isUploading || isStreaming}
-              className="p-2 rounded-xl text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-dark-surface transition-colors disabled:opacity-50"
+              className="p-2 rounded-xl text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-[#2b2b2b] transition-colors disabled:opacity-50"
               title="Attach document or image (PDF, DOCX, TXT, CSV, Image)"
             >
               <Paperclip className="w-4 h-4" />
             </button>
 
+            {/* Create Image Toggle Button */}
+            <button
+              onClick={() => {
+                setEnableImageGeneration(!enableImageGeneration);
+                if (!enableImageGeneration) setEnableWebSearch(false);
+              }}
+              type="button"
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium transition-colors ${
+                enableImageGeneration
+                  ? 'bg-neutral-900 text-white dark:bg-white dark:text-black font-semibold'
+                  : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-[#2b2b2b]'
+              }`}
+              title="Generate image with AI"
+            >
+              <Palette className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Create Image</span>
+            </button>
+
             {/* Web Search Toggle Button */}
             <button
-              onClick={() => setEnableWebSearch(!enableWebSearch)}
+              onClick={() => {
+                setEnableWebSearch(!enableWebSearch);
+                if (!enableWebSearch) setEnableImageGeneration(false);
+              }}
               type="button"
-              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium transition-all ${
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium transition-colors ${
                 enableWebSearch
-                  ? 'bg-accent-500/15 text-accent-500 border border-accent-500/30'
-                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-dark-surface'
+                  ? 'bg-neutral-900 text-white dark:bg-white dark:text-black font-semibold'
+                  : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-[#2b2b2b]'
               }`}
               title="Search the web for real-time information"
             >
@@ -225,7 +255,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
               className={`p-2 rounded-xl transition-colors ${
                 isListening
                   ? 'text-rose-500 bg-rose-50 dark:bg-rose-950/40 animate-pulse'
-                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-dark-surface'
+                  : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-[#2b2b2b]'
               }`}
               title={isListening ? 'Listening... click to stop' : 'Voice input'}
             >
@@ -239,27 +269,27 @@ export const ChatInput: React.FC<ChatInputProps> = ({
               <button
                 onClick={onStop}
                 type="button"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gray-900 hover:bg-black dark:bg-gray-100 dark:hover:bg-white text-white dark:text-gray-900 font-medium text-xs shadow-sm transition-all animate-in zoom-in-90"
+                className="w-8 h-8 rounded-full bg-black text-white hover:bg-neutral-800 dark:bg-white dark:text-black dark:hover:bg-neutral-200 flex items-center justify-center transition-all shadow-sm"
+                title="Stop generating"
               >
                 <Square className="w-3.5 h-3.5 fill-current" />
-                <span>Stop</span>
               </button>
             ) : (
               <button
                 onClick={handleSend}
                 disabled={!canSubmit}
                 type="button"
-                className={`p-2.5 rounded-xl text-white shadow-md transition-all ${
+                className={`w-8 h-8 rounded-full flex items-center justify-center transition-all shadow-sm ${
                   canSubmit
-                    ? 'bg-gradient-to-r from-primary-600 via-secondary-500 to-accent-500 hover:opacity-95 shadow-primary-500/25 cursor-pointer scale-100'
-                    : 'bg-gray-300 dark:bg-dark-border text-gray-400 dark:text-gray-500 cursor-not-allowed opacity-60'
+                    ? 'bg-black text-white hover:bg-neutral-800 dark:bg-white dark:text-black dark:hover:bg-neutral-200 cursor-pointer'
+                    : 'bg-neutral-200 text-neutral-400 dark:bg-neutral-800 dark:text-neutral-600 cursor-not-allowed'
                 }`}
                 title="Send message"
               >
                 {isUploading ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
-                  <Send className="w-4 h-4" />
+                  <ArrowUp className="w-4 h-4 stroke-[2.5]" />
                 )}
               </button>
             )}
@@ -267,8 +297,8 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         </div>
       </div>
 
-      <div className="mt-2 text-center text-[11px] text-gray-400 dark:text-gray-500">
-        LUMIQ AI can make mistakes. Verify important information.
+      <div className="mt-2 text-center text-[11px] text-neutral-400 dark:text-neutral-500">
+        LOKR AI can make mistakes. Verify important information.
       </div>
     </div>
   );

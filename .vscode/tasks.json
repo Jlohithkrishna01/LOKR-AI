@@ -32,7 +32,7 @@
       }
     },
     {
-      "label": "Start LUMIQ AI (Both Backend & Frontend)",
+      "label": "Start LOKR AI (Both Backend & Frontend)",
       "dependsOn": [
         "1. Run Backend (FastAPI)",
         "2. Run Frontend (Vite)"

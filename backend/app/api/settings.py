@@ -66,4 +66,4 @@ def delete_account(
 
     db.delete(current_user)
     db.commit()
-    return {"message": "Your LUMIQ AI account has been permanently deleted."}
+    return {"message": "Your LOKR AI account has been permanently deleted."}

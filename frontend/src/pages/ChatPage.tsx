@@ -40,7 +40,7 @@ export const ChatPage: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-light-bg dark:bg-dark-bg text-light-text dark:text-dark-text font-sans antialiased">
+    <div className="flex h-screen w-screen overflow-hidden bg-white dark:bg-[#0d0d0d] text-neutral-900 dark:text-neutral-100 font-sans antialiased">
       {/* Collapsible Left Sidebar */}
       <Sidebar
         isOpen={isSidebarOpen}

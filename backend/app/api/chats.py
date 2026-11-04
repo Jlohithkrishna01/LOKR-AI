@@ -44,17 +44,38 @@ def get_conversations(
 
     conversations = query.order_by(desc(Conversation.updated_at)).all()
 
+    if not conversations:
+        return []
+
+    conv_ids = [c.id for c in conversations]
+
+    # Batch 1: Fetch message counts grouped by conversation
+    counts_sub = (
+        db.query(Message.conversation_id, func.count(Message.id))
+        .filter(Message.conversation_id.in_(conv_ids))
+        .group_by(Message.conversation_id)
+        .all()
+    )
+    counts_map = {row[0]: row[1] for row in counts_sub}
+
+    # Batch 2: Fetch last message content for each conversation in single pass
+    latest_msg_sub = (
+        db.query(Message.conversation_id, func.max(Message.id).label("max_id"))
+        .filter(Message.conversation_id.in_(conv_ids))
+        .group_by(Message.conversation_id)
+        .subquery()
+    )
+    latest_msgs = (
+        db.query(Message.conversation_id, Message.content)
+        .join(latest_msg_sub, Message.id == latest_msg_sub.c.max_id)
+        .all()
+    )
+    latest_msg_map = {row[0]: row[1] for row in latest_msgs}
+
     results = []
     for conv in conversations:
-        # Get count and last message
-        msg_count = db.query(func.count(Message.id)).filter(Message.conversation_id == conv.id).scalar() or 0
-        last_msg = (
-            db.query(Message.content)
-            .filter(Message.conversation_id == conv.id)
-            .order_by(desc(Message.created_at))
-            .first()
-        )
-        last_content = last_msg[0] if last_msg else None
+        msg_count = counts_map.get(conv.id, 0)
+        last_content = latest_msg_map.get(conv.id)
         if last_content and len(last_content) > 60:
             last_content = last_content[:60] + "..."
 

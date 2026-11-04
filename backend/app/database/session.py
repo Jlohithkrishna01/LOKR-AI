@@ -1,4 +1,21 @@
 import logging
+import importlib.util
+from pathlib import Path
+
+# Safeguard for Windows Application Control / Smart App Control:
+# Precompiled .pyd binaries in SQLAlchemy can be blocked by Windows policy.
+# SQLAlchemy contains pure-Python fallbacks (.py) for all cython extensions.
+try:
+    _sqla_spec = importlib.util.find_spec("sqlalchemy")
+    if _sqla_spec and _sqla_spec.submodule_search_locations:
+        for _loc in _sqla_spec.submodule_search_locations:
+            for _pyd in Path(_loc).rglob("*.pyd"):
+                try:
+                    _pyd.unlink()
+                except Exception:
+                    pass
+except Exception:
+    pass
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker, Session
 from app.config import settings

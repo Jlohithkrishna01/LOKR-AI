@@ -19,11 +19,11 @@ export const FilePreviewChip: React.FC<FilePreviewChipProps> = ({
 
   const getIcon = (type?: string) => {
     const t = (type || '').toLowerCase();
-    if (t.includes('pdf')) return <FileText className="w-4 h-4 text-rose-500" />;
-    if (t.includes('doc')) return <FileText className="w-4 h-4 text-blue-500" />;
-    if (t.includes('csv') || t.includes('xls')) return <FileSpreadsheet className="w-4 h-4 text-emerald-500" />;
-    if (['png', 'jpg', 'jpeg', 'webp', 'gif'].includes(t)) return <ImageIcon className="w-4 h-4 text-purple-500" />;
-    return <FileCode className="w-4 h-4 text-amber-500" />;
+    if (t.includes('pdf')) return <FileText className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />;
+    if (t.includes('doc')) return <FileText className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />;
+    if (t.includes('csv') || t.includes('xls')) return <FileSpreadsheet className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />;
+    if (['png', 'jpg', 'jpeg', 'webp', 'gif'].includes(t)) return <ImageIcon className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />;
+    return <FileCode className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />;
   };
 
   const formatSize = (bytes: number) => {
@@ -35,10 +35,10 @@ export const FilePreviewChip: React.FC<FilePreviewChipProps> = ({
 
   return (
     <div
-      className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-gray-200 dark:border-dark-border bg-gray-100 dark:bg-dark-card text-xs text-gray-800 dark:text-gray-200 shadow-sm animate-in fade-in duration-150 ${className}`}
+      className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-neutral-100 dark:bg-[#262626] text-xs text-neutral-800 dark:text-neutral-200 shadow-sm animate-in fade-in duration-150 ${className}`}
     >
       {isLoading ? (
-        <Loader2 className="w-4 h-4 animate-spin text-primary-500" />
+        <Loader2 className="w-4 h-4 animate-spin text-neutral-500" />
       ) : (
         getIcon(fileInfo?.file_type)
       )}
@@ -46,7 +46,7 @@ export const FilePreviewChip: React.FC<FilePreviewChipProps> = ({
       <div className="flex flex-col max-w-[180px] sm:max-w-[240px]">
         <span className="font-medium truncate">{fileInfo?.file_name || 'Uploading file...'}</span>
         {fileInfo?.file_size ? (
-          <span className="text-[10px] text-gray-400">{formatSize(fileInfo.file_size)}</span>
+          <span className="text-[10px] text-neutral-400 dark:text-neutral-500">{formatSize(fileInfo.file_size)}</span>
         ) : null}
       </div>
 
@@ -54,7 +54,7 @@ export const FilePreviewChip: React.FC<FilePreviewChipProps> = ({
         <button
           onClick={onRemove}
           type="button"
-          className="ml-1 p-0.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+          className="ml-1 p-0.5 rounded-full hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 transition-colors"
           title="Remove file"
         >
           <X className="w-3.5 h-3.5" />

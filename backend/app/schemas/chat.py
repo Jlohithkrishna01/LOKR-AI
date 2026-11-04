@@ -61,4 +61,6 @@ class SendMessageRequest(BaseModel):
     file_type: Optional[str] = None
     file_extracted_text: Optional[str] = None
     enable_web_search: Optional[bool] = None
+    enable_image_generation: Optional[bool] = None
     model: Optional[str] = None
+    client_timezone: Optional[str] = "Asia/Kolkata"

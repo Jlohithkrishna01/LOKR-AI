@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024" fill="none">
+  <defs>
+    <!-- Background Canvas Gradient -->
+    <radialGradient id="canvas-bg" cx="50%" cy="38%" r="65%">
+      <stop offset="0%" stop-color="#16172E" />
+      <stop offset="60%" stop-color="#0D0E1C" />
+      <stop offset="100%" stop-color="#07070F" />
+    </radialGradient>
+
+    <!-- Brand Signature Gradient (Indigo -> Purple -> Cyan) -->
+    <linearGradient id="lokr-tile-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366F1" />
+      <stop offset="55%" stop-color="#8B5CF6" />
+      <stop offset="100%" stop-color="#06B6D4" />
+    </linearGradient>
+
+    <!-- AI Gradient -->
+    <linearGradient id="lokr-text-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6366F1" />
+      <stop offset="50%" stop-color="#8B5CF6" />
+      <stop offset="100%" stop-color="#06B6D4" />
+    </linearGradient>
+
+    <!-- Soft Ambient Tile Glow -->
+    <filter id="tile-glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="24" stdDeviation="32" flood-color="#6366F1" flood-opacity="0.4" />
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#06B6D4" flood-opacity="0.2" />
+    </filter>
+
+    <!-- Pulse Dot Glow -->
+    <filter id="pulse-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="10" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Background Base -->
+  <rect width="1024" height="1024" rx="64" fill="url(#canvas-bg)" />
+
+  <!-- 1. Centered Logo Symbol (360x360 at x=332, y=170) -->
+  <g transform="translate(332, 170)" filter="url(#tile-glow)">
+    <!-- Squircle Tile -->
+    <rect x="0" y="0" width="360" height="360" rx="98" fill="url(#lokr-tile-grad)" />
+    <!-- Glass Inner Border -->
+    <rect x="4" y="4" width="352" height="352" rx="94" stroke="#FFFFFF" stroke-opacity="0.24" stroke-width="3" />
+
+    <!-- Stylized Modern 'L' AI Path -->
+    <path d="M112 86 V224 C112 245.5 129.5 263 151 263 H246 C253.5 263 260 256.5 260 249 C260 241.5 253.5 235 246 235 H157 C151 235 146 230 146 224 V86 C146 78.5 139.5 72 132 72 C124.5 72 112 78.5 112 86 Z" fill="#FFFFFF" />
+
+    <!-- Neural Connection Line -->
+    <line x1="146" y1="120" x2="224" y2="120" stroke="#FFFFFF" stroke-opacity="0.55" stroke-width="7" stroke-dasharray="9 9" stroke-linecap="round" />
+
+    <!-- Luminous Energy Pulse Dot -->
+    <circle cx="248" cy="120" r="22" fill="#06B6D4" filter="url(#pulse-glow)" />
+    <circle cx="248" cy="120" r="11" fill="#FFFFFF" />
+  </g>
+
+  <!-- 2. Brand Typography: "LOKR AI" -->
+  <g transform="translate(512, 690)">
+    <text text-anchor="middle" font-family="'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="88" letter-spacing="-1.5px">
+      <tspan fill="#FFFFFF">LOKR</tspan>
+      <tspan dx="18" fill="url(#lokr-text-grad)">AI</tspan>
+    </text>
+  </g>
+
+  <!-- 3. Professional Category Tagline -->
+  <g transform="translate(512, 755)">
+    <text text-anchor="middle" font-family="'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="600" font-size="20" letter-spacing="7px" fill="#94A3B8" fill-opacity="0.95">
+      INTELLIGENT AI ASSISTANT
+    </text>
+  </g>
+</svg>

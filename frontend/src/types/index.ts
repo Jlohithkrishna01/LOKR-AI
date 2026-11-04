@@ -1,9 +1,14 @@
 export interface User {
   id: number;
   name: string;
+  preferred_name?: string | null;
   email: string;
   profile_image: string | null;
   bio: string | null;
+  provider?: string;
+  provider_id?: string | null;
+  google_id?: string | null;
+  apple_id?: string | null;
   created_at: string;
   updated_at: string;
 }

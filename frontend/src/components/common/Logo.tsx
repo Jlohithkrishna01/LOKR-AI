@@ -4,39 +4,38 @@ interface LogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
   showText?: boolean;
   className?: string;
+  vertical?: boolean;
 }
 
-export const Logo: React.FC<LogoProps> = ({ size = 'md', showText = true, className = '' }) => {
+export const Logo: React.FC<LogoProps> = ({ size = 'md', showText = true, className = '', vertical = false }) => {
   const sizeMap = {
-    sm: { icon: 'w-7 h-7', text: 'text-lg', dot: 'w-1.5 h-1.5' },
-    md: { icon: 'w-9 h-9', text: 'text-xl', dot: 'w-2 h-2' },
-    lg: { icon: 'w-12 h-12', text: 'text-2xl', dot: 'w-2.5 h-2.5' },
-    xl: { icon: 'w-16 h-16', text: 'text-4xl', dot: 'w-3 h-3' },
+    sm: { icon: 'w-7 h-7', text: 'text-base', dot: 'w-1.5 h-1.5' },
+    md: { icon: 'w-8 h-8', text: 'text-lg', dot: 'w-2 h-2' },
+    lg: { icon: 'w-11 h-11', text: 'text-2xl', dot: 'w-2.5 h-2.5' },
+    xl: { icon: 'w-14 h-14', text: 'text-3xl', dot: 'w-3 h-3' },
   };
 
   const { icon, text } = sizeMap[size];
 
   return (
-    <div className={`flex items-center gap-2.5 select-none ${className}`}>
-      {/* Abstract AI / L Vector Icon */}
-      <div className={`relative flex items-center justify-center ${icon} rounded-xl bg-gradient-to-br from-primary-500 via-secondary-500 to-accent-500 shadow-md shadow-primary-500/20 text-white font-bold transition-transform hover:scale-105`}>
-        <svg viewBox="0 0 24 24" fill="none" className="w-60% h-60% w-5 h-5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          {/* Futuristic L Path */}
-          <path d="M7 5v11a3 3 0 0 0 3 3h7" />
-          <circle cx="17" cy="7" r="2.5" fill="#06B6D4" stroke="none" />
+    <div className={`flex ${vertical ? 'flex-col items-center justify-center' : 'items-center'} gap-2.5 select-none ${className}`}>
+      {/* LOKR AI Emblem */}
+      <div className={`relative flex items-center justify-center ${icon} rounded-xl bg-black dark:bg-white text-white dark:text-black shadow-sm transition-transform hover:scale-105 shrink-0`}>
+        <svg viewBox="180 115 660 660" fill="none" className="w-[66%] h-[66%]" stroke="none">
+          <path
+            d="M 539 598 L 518 619 L 550 651 L 552 651 L 571 632 L 571 630 Z M 484 469 L 382 565 L 382 626 L 511 752 L 641 626 L 641 565 L 609 534 L 588 556 L 609 577 L 609 611 L 511 707 L 415 612 L 415 578 L 504 489 Z M 620 467 L 611 474 L 533 549 L 453 629 L 472 648 L 474 648 L 481 642 L 533 590 L 640 487 Z M 341 462 L 312 491 L 333 511 L 361 482 Z M 476 396 L 454 418 L 511 477 L 550 515 L 571 494 Z M 609 391 L 587 413 L 689 514 L 710 492 Z M 659 424 L 681 445 L 715 411 L 694 390 Z M 328 391 L 310 409 L 310 411 L 414 517 L 416 517 L 437 496 L 332 389 Z M 671 298 L 671 347 L 773 448 L 664 560 L 664 622 L 698 655 L 709 664 L 731 641 L 694 605 L 694 577 L 817 453 L 821 447 Z M 559 254 L 511 300 L 464 254 L 442 276 L 473 307 L 488 324 L 386 425 L 408 446 L 547 311 L 581 276 Z M 317 229 L 291 254 L 326 288 L 326 325 L 202 448 L 358 604 L 358 559 L 250 448 L 358 342 L 358 268 Z M 512 133 L 455 189 L 381 266 L 381 342 L 415 376 L 437 355 L 437 353 L 413 329 L 413 281 L 511 182 L 609 281 L 609 329 L 519 420 L 519 422 L 540 442 L 643 341 L 643 267 Z"
+            fill="currentColor"
+            fillRule="evenodd"
+          />
         </svg>
-        <span className="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-500 opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-accent-500"></span>
-        </span>
       </div>
 
       {showText && (
-        <div className="flex items-baseline tracking-tight">
-          <span className={`font-extrabold ${text} text-gray-900 dark:text-white`}>
-            LUMIQ
+        <div className={`flex items-baseline tracking-tight ${vertical ? 'justify-center text-center' : ''}`}>
+          <span className={`font-bold ${text} text-neutral-900 dark:text-white tracking-tight`}>
+            LOKR
           </span>
-          <span className={`ml-1 font-bold ${text} bg-gradient-to-r from-primary-500 to-accent-500 bg-clip-text text-transparent`}>
+          <span className={`ml-1 font-semibold ${text} text-neutral-500 dark:text-neutral-400`}>
             AI
           </span>
         </div>

@@ -1,8 +1,8 @@
 @echo off
-title LUMIQ AI - Frontend
+title LOKR AI - Frontend
 cd /d "%~dp0frontend"
 echo ==============================================
-echo   Starting LUMIQ AI Frontend (Vite)...
+echo   Starting LOKR AI Frontend (Vite)...
 echo ==============================================
 if not exist "node_modules\" (
     echo [INFO] Dependencies not detected. Running npm install...

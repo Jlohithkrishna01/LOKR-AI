@@ -1,10 +1,11 @@
 import React from 'react';
-import { Lightbulb, Code2, FileSearch, Globe, Rocket } from 'lucide-react';
+import { Lightbulb, Code2, FileSearch, Globe, Rocket, Palette } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { Logo } from '../common/Logo';
+import { extractPreferredName } from '../../utils/name';
 
 interface WelcomeScreenProps {
-  onSelectSuggestion: (prompt: string, enableWebSearch?: boolean) => void;
+  onSelectSuggestion: (prompt: string, enableWebSearch?: boolean, enableImageGeneration?: boolean) => void;
 }
 
 export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onSelectSuggestion }) => {
@@ -17,82 +18,90 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onSelectSuggestion
     return 'Good evening';
   };
 
-  const firstName = user?.name ? user.name.split(' ')[0] : 'there';
+  const preferredName = user?.preferred_name || extractPreferredName(user?.name);
 
   const suggestionCards = [
+    {
+      title: 'Generate an image',
+      desc: 'Create photorealistic art and concept designs',
+      prompt: 'Create an image of a majestic cybernetic lion in a glowing futuristic city',
+      icon: <Palette className="w-4 h-4" />,
+      webSearch: false,
+      imageGen: true,
+    },
     {
       title: 'Explain a concept',
       desc: 'Understand complex ideas in simple terms',
       prompt: 'Explain the core principles of quantum computing and why qubits are revolutionary.',
-      icon: <Lightbulb className="w-5 h-5 text-amber-500" />,
-      bg: 'hover:border-amber-500/40 hover:bg-amber-50/50 dark:hover:bg-amber-950/20',
+      icon: <Lightbulb className="w-4 h-4" />,
       webSearch: false,
+      imageGen: false,
     },
     {
       title: 'Write code',
       desc: 'Build clean, production-ready algorithms',
       prompt: 'Write a Python FastAPI service with rate limiting and database connection pooling.',
-      icon: <Code2 className="w-5 h-5 text-indigo-500" />,
-      bg: 'hover:border-indigo-500/40 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/20',
+      icon: <Code2 className="w-4 h-4" />,
       webSearch: false,
+      imageGen: false,
     },
     {
       title: 'Analyze a document',
       desc: 'Extract key takeaways and action items',
       prompt: 'What are best practices for summarizing technical whitepapers and executive resumes?',
-      icon: <FileSearch className="w-5 h-5 text-emerald-500" />,
-      bg: 'hover:border-emerald-500/40 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/20',
+      icon: <FileSearch className="w-4 h-4" />,
       webSearch: false,
+      imageGen: false,
     },
     {
       title: 'Search the web',
       desc: 'Get up-to-the-minute real-time data',
       prompt: 'What are the latest breakthrough updates in artificial intelligence this week?',
-      icon: <Globe className="w-5 h-5 text-cyan-500" />,
-      bg: 'hover:border-cyan-500/40 hover:bg-cyan-50/50 dark:hover:bg-cyan-950/20',
+      icon: <Globe className="w-4 h-4" />,
       webSearch: true,
+      imageGen: false,
     },
     {
       title: 'Help with a project',
       desc: 'Architect a roadmap from idea to launch',
       prompt: 'Create a comprehensive 4-week execution roadmap to launch an AI SaaS product.',
-      icon: <Rocket className="w-5 h-5 text-purple-500" />,
-      bg: 'hover:border-purple-500/40 hover:bg-purple-50/50 dark:hover:bg-purple-950/20',
+      icon: <Rocket className="w-4 h-4" />,
       webSearch: false,
+      imageGen: false,
     },
   ];
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center max-w-4xl mx-auto px-4 py-8 text-center animate-in fade-in duration-300">
+    <div className="flex-1 flex flex-col items-center justify-center max-w-3xl lg:max-w-4xl mx-auto px-4 py-8 text-center animate-in fade-in duration-200">
       {/* Brand Header */}
-      <div className="mb-6 flex flex-col items-center">
+      <div className="mb-8 flex flex-col items-center">
         <Logo size="lg" showText={false} className="mb-4" />
-        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white">
-          {getGreeting()}, <span className="bg-gradient-to-r from-primary-500 via-secondary-500 to-accent-500 bg-clip-text text-transparent">{firstName}</span> 👋
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-neutral-900 dark:text-white">
+          {preferredName ? `${getGreeting()}, ${preferredName} 👋` : `${getGreeting()}! 👋`}
         </h1>
-        <p className="mt-2 text-base sm:text-lg text-gray-600 dark:text-gray-300 font-medium">
+        <p className="mt-2 text-sm sm:text-base text-neutral-500 dark:text-neutral-400">
           How can I help you today?
         </p>
       </div>
 
       {/* Suggestion Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 w-full mt-4 text-left">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 w-full text-left">
         {suggestionCards.map((card, idx) => (
           <button
             key={idx}
-            onClick={() => onSelectSuggestion(card.prompt, card.webSearch)}
+            onClick={() => onSelectSuggestion(card.prompt, card.webSearch, card.imageGen)}
             type="button"
-            className={`group flex flex-col p-4 rounded-2xl border border-gray-200/90 dark:border-dark-border bg-white dark:bg-dark-card transition-all duration-200 shadow-sm hover:shadow-md ${card.bg}`}
+            className="group flex flex-col p-4 rounded-2xl border border-neutral-200/90 dark:border-neutral-800 bg-white dark:bg-[#181818] hover:bg-neutral-50 dark:hover:bg-[#202020] transition-colors shadow-sm text-left cursor-pointer"
           >
-            <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 rounded-xl bg-gray-100 dark:bg-dark-surface">
+            <div className="flex items-center gap-2.5 mb-2">
+              <div className="p-2 rounded-xl bg-neutral-100 dark:bg-[#262626] text-neutral-700 dark:text-neutral-300">
                 {card.icon}
               </div>
-              <span className="font-semibold text-sm text-gray-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+              <span className="font-semibold text-xs sm:text-sm text-neutral-900 dark:text-white">
                 {card.title}
               </span>
             </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 leading-relaxed">
+            <p className="text-xs text-neutral-500 dark:text-neutral-400 line-clamp-2 leading-relaxed">
               {card.desc}
             </p>
           </button>

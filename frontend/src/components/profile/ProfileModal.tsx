@@ -155,13 +155,13 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
                 )}
               </button>
             </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+            <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-2">
               Click photo to change avatar (JPG, PNG, WEBP)
             </p>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
+            <label className="block text-xs font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
               Full Name
             </label>
             <input
@@ -169,12 +169,12 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              className="w-full px-3.5 py-2.5 rounded-xl text-sm bg-gray-50 dark:bg-dark-card border border-gray-200 dark:border-dark-border text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500/30"
+              className="w-full px-3.5 py-2.5 rounded-xl text-sm bg-neutral-50 dark:bg-[#212121] border border-neutral-200 dark:border-neutral-800 text-neutral-900 dark:text-white focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
+            <label className="block text-xs font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
               Bio or Title
             </label>
             <textarea
@@ -182,22 +182,22 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
               onChange={(e) => setBio(e.target.value)}
               placeholder="e.g. Software Engineer, AI Researcher, Student"
               rows={2}
-              className="w-full px-3.5 py-2 rounded-xl text-sm bg-gray-50 dark:bg-dark-card border border-gray-200 dark:border-dark-border text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500/30 resize-none"
+              className="w-full px-3.5 py-2 rounded-xl text-sm bg-neutral-50 dark:bg-[#212121] border border-neutral-200 dark:border-neutral-800 text-neutral-900 dark:text-white focus:outline-none resize-none"
             />
           </div>
 
-          <div className="flex items-center justify-end gap-2 pt-4 border-t border-gray-100 dark:border-dark-border">
+          <div className="flex items-center justify-end gap-2 pt-4 border-t border-neutral-100 dark:border-neutral-800">
             <button
               type="button"
               onClick={() => setIsEditing(false)}
-              className="px-4 py-2 rounded-xl text-xs font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dark-card transition-colors"
+              className="px-4 py-2 rounded-xl text-xs font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-[#212121] transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isLoading}
-              className="flex items-center gap-1.5 px-5 py-2 rounded-xl text-xs font-semibold text-white bg-primary-600 hover:bg-primary-500 transition-colors disabled:opacity-50"
+              className="flex items-center gap-1.5 px-5 py-2 rounded-xl text-xs font-semibold text-white bg-black hover:bg-neutral-800 dark:bg-white dark:text-black dark:hover:bg-neutral-200 transition-colors disabled:opacity-50"
             >
               {isLoading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
               <span>Save Changes</span>
@@ -210,14 +210,14 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
           <div className="flex items-center gap-4">
             <Avatar src={user?.profile_image} name={user?.name} size="lg" />
             <div className="flex-1 min-w-0">
-              <h4 className="text-base font-bold text-gray-900 dark:text-white truncate">
+              <h4 className="text-base font-bold text-neutral-900 dark:text-white truncate">
                 {user?.name}
               </h4>
-              <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+              <p className="text-xs text-neutral-500 dark:text-neutral-400 truncate">
                 {user?.email}
               </p>
               {user?.bio && (
-                <p className="text-xs text-primary-600 dark:text-primary-400 mt-1 font-medium">
+                <p className="text-xs text-neutral-600 dark:text-neutral-300 mt-1 font-medium">
                   {user.bio}
                 </p>
               )}
@@ -225,7 +225,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
             <button
               onClick={() => setIsEditing(true)}
               type="button"
-              className="px-3 py-1.5 rounded-xl text-xs font-semibold text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-950/40 hover:bg-primary-100 transition-colors shrink-0"
+              className="px-3 py-1.5 rounded-xl text-xs font-semibold text-neutral-900 dark:text-white bg-neutral-100 dark:bg-[#252525] hover:bg-neutral-200 dark:hover:bg-[#303030] transition-colors shrink-0"
             >
               Edit
             </button>
@@ -233,40 +233,40 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
 
           {/* Account Metrics Grid */}
           <div className="grid grid-cols-2 gap-3">
-            <div className="p-3.5 rounded-2xl bg-gray-50 dark:bg-dark-card border border-gray-100 dark:border-dark-border">
-              <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mb-1">
-                <MessageSquare className="w-4 h-4 text-primary-500" />
+            <div className="p-3.5 rounded-2xl bg-neutral-50 dark:bg-[#212121] border border-neutral-200 dark:border-neutral-800">
+              <div className="flex items-center gap-2 text-xs text-neutral-500 dark:text-neutral-400 mb-1">
+                <MessageSquare className="w-4 h-4 text-neutral-500" />
                 <span>Conversations</span>
               </div>
-              <p className="text-xl font-bold text-gray-900 dark:text-white">
+              <p className="text-xl font-bold text-neutral-900 dark:text-white">
                 {stats.conversation_count}
               </p>
             </div>
 
-            <div className="p-3.5 rounded-2xl bg-gray-50 dark:bg-dark-card border border-gray-100 dark:border-dark-border">
-              <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mb-1">
-                <Layers className="w-4 h-4 text-secondary-500" />
+            <div className="p-3.5 rounded-2xl bg-neutral-50 dark:bg-[#212121] border border-neutral-200 dark:border-neutral-800">
+              <div className="flex items-center gap-2 text-xs text-neutral-500 dark:text-neutral-400 mb-1">
+                <Layers className="w-4 h-4 text-neutral-500" />
                 <span>Messages Sent</span>
               </div>
-              <p className="text-xl font-bold text-gray-900 dark:text-white">
+              <p className="text-xl font-bold text-neutral-900 dark:text-white">
                 {stats.message_count}
               </p>
             </div>
           </div>
 
           {/* Account Details Info */}
-          <div className="p-4 rounded-2xl bg-gray-50/70 dark:bg-dark-card/60 border border-gray-100 dark:border-dark-border space-y-2 text-xs">
+          <div className="p-4 rounded-2xl bg-neutral-50/80 dark:bg-[#212121]/60 border border-neutral-200 dark:border-neutral-800 space-y-2 text-xs">
             <div className="flex items-center justify-between">
-              <span className="text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
-                <Calendar className="w-3.5 h-3.5 text-gray-400" />
+              <span className="text-neutral-500 dark:text-neutral-400 flex items-center gap-1.5">
+                <Calendar className="w-3.5 h-3.5 text-neutral-400" />
                 <span>Member Since</span>
               </span>
-              <span className="font-medium text-gray-900 dark:text-white">
+              <span className="font-medium text-neutral-900 dark:text-white">
                 {formatDate(user?.created_at)}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-gray-500 dark:text-gray-400">Account Status</span>
+              <span className="text-neutral-500 dark:text-neutral-400">Account Status</span>
               <span className="inline-flex items-center gap-1 font-semibold text-emerald-500">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                 Active

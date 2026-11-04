@@ -64,6 +64,13 @@ def change_password(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
+    if not current_user.password_hash:
+        provider_name = current_user.provider.capitalize() if current_user.provider else "social"
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"This account is signed in with {provider_name}. Password changes are managed through {provider_name}."
+        )
+
     if not verify_password(req.current_password, current_user.password_hash):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

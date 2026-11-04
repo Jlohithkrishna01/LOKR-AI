@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-type ThemeMode = 'light' | 'dark' | 'system';
+export type ThemeMode = 'light' | 'dark' | 'system';
 
 interface ThemeContextType {
   theme: ThemeMode;
@@ -13,11 +13,19 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [theme, setThemeState] = useState<ThemeMode>(() => {
-    const saved = localStorage.getItem('lumiq_theme') as ThemeMode;
-    return saved || 'dark'; // Default dark mode for modern AI product feel
+    const saved = localStorage.getItem('lokr_theme') as ThemeMode | null;
+    return saved || 'system';
   });
 
-  const [isDark, setIsDark] = useState<boolean>(true);
+  const [isDark, setIsDark] = useState<boolean>(() => {
+    const saved = localStorage.getItem('lokr_theme');
+    if (saved === 'dark') return true;
+    if (saved === 'light') return false;
+    if (typeof window !== 'undefined' && window.matchMedia) {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    return false;
+  });
 
   useEffect(() => {
     const root = document.documentElement;
@@ -34,13 +42,15 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       setIsDark(activeDark);
       if (activeDark) {
         root.classList.add('dark');
+        root.style.colorScheme = 'dark';
       } else {
         root.classList.remove('dark');
+        root.style.colorScheme = 'light';
       }
     };
 
     updateActualTheme();
-    localStorage.setItem('lumiq_theme', theme);
+    localStorage.setItem('lokr_theme', theme);
 
     const listener = () => {
       if (theme === 'system') {
@@ -57,7 +67,11 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const toggleTheme = () => {
-    setThemeState((prev) => (prev === 'dark' ? 'light' : 'dark'));
+    setThemeState(() => {
+      // If currently dark, flip to light; if light, flip to dark
+      const next: ThemeMode = isDark ? 'light' : 'dark';
+      return next;
+    });
   };
 
   return (

@@ -8,6 +8,8 @@ import {
   Source
 } from '../types';
 
+import { extractPreferredName } from '../utils/name';
+
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
 export class ApiError extends Error {
@@ -19,14 +21,15 @@ export class ApiError extends Error {
 }
 
 export const getToken = (): string | null => {
-  return localStorage.getItem('lumiq_token');
+  return localStorage.getItem('lokr_token') || localStorage.getItem('lumiq_token');
 };
 
 export const setToken = (token: string): void => {
-  localStorage.setItem('lumiq_token', token);
+  localStorage.setItem('lokr_token', token);
 };
 
 export const removeToken = (): void => {
+  localStorage.removeItem('lokr_token');
   localStorage.removeItem('lumiq_token');
 };
 
@@ -101,6 +104,11 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
 const DEMO_STORAGE_KEY = 'lumiq_demo_conversations';
 const DEMO_SETTINGS_KEY = 'lumiq_demo_settings';
 
+export function isDemoOrSocialToken(t?: string | null): boolean {
+  const token = t !== undefined ? t : getToken();
+  return token === 'demo-guest-token';
+}
+
 interface DemoConvData {
   id: number;
   title: string;
@@ -127,7 +135,7 @@ function getDemoConversations(): DemoConvData[] {
 
   const defaultConv: DemoConvData = {
     id: 1,
-    title: 'Welcome to LUMIQ AI 👋',
+    title: 'Welcome to LOKR AI 👋',
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     messages: [
@@ -135,11 +143,11 @@ function getDemoConversations(): DemoConvData[] {
         id: 101,
         conversation_id: 1,
         role: 'assistant',
-        content: `### Welcome to LUMIQ AI! 🚀\n\nYou are running in **Interactive Demo Mode** directly in your browser on GitHub Pages.\n\nHere are some of the features you can explore:\n- **Real-Time Streaming**: Natural, smooth AI conversation simulation.\n- **Syntax Highlighted Code**: Rich rendering for Python, JavaScript, TypeScript, SQL, and more.\n- **Web Search Citations**: Live source cards and references.\n- **Document Intelligence**: Upload files and query their contents.\n- **Theme Switcher**: Switch between Light, Dark, and System modes using the top-right toggle.\n\nAsk me anything or select a suggestion card below to get started!`,
+        content: `### Welcome to LOKR AI! 🚀\n\nYou are running in **Interactive Demo Mode** directly in your browser on GitHub Pages.\n\nHere are some of the features you can explore:\n- **Real-Time Streaming**: Natural, smooth AI conversation simulation.\n- **Syntax Highlighted Code**: Rich rendering for Python, JavaScript, TypeScript, SQL, and more.\n- **Web Search Citations**: Live source cards and references.\n- **Document Intelligence**: Upload files and query their contents.\n- **Theme Switcher**: Switch between Light, Dark, and System modes using the top-right toggle.\n\nAsk me anything or select a suggestion card below to get started!`,
         created_at: new Date().toISOString(),
         sources: [
           {
-            title: 'LUMIQ AI GitHub Repository',
+            title: 'LOKR AI GitHub Repository',
             url: 'https://github.com/Jlohithkrishna01/Ai_App',
             source_name: 'GitHub',
             snippet: 'Production-grade intelligent AI chatbot inspired by ChatGPT.',
@@ -170,6 +178,20 @@ export const api = {
     });
   },
 
+  async loginWithGoogle(data: { credential?: string; access_token?: string; code?: string }): Promise<{ access_token: string; token_type: string; user: User }> {
+    return request('/auth/google', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  async loginWithApple(data: { id_token: string; code?: string; user?: any }): Promise<{ access_token: string; token_type: string; user: User }> {
+    return request('/auth/apple', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
   async login(data: any): Promise<{ access_token: string; token_type: string; user: User }> {
     return request('/auth/login', {
       method: 'POST',
@@ -178,7 +200,7 @@ export const api = {
   },
 
   async forgotPassword(email: string): Promise<{ message: string; reset_token?: string; reset_url?: string }> {
-    if (getToken() === 'demo-guest-token') {
+    if (isDemoOrSocialToken()) {
       return { message: 'Demo Mode: Password reset link simulated.' };
     }
     return request('/auth/forgot-password', {
@@ -188,7 +210,7 @@ export const api = {
   },
 
   async resetPassword(data: any): Promise<{ message: string }> {
-    if (getToken() === 'demo-guest-token') {
+    if (isDemoOrSocialToken()) {
       return { message: 'Demo Mode: Password has been reset.' };
     }
     return request('/auth/reset-password', {
@@ -198,12 +220,12 @@ export const api = {
   },
 
   async getMe(): Promise<User> {
-    if (getToken() === 'demo-guest-token') {
+    if (isDemoOrSocialToken()) {
       return {
         id: 9999,
-        email: 'guest@lumiq.ai',
+        email: 'guest@lokr.ai',
         name: 'Guest Explorer',
-        bio: 'Exploring LUMIQ AI in interactive Demo Mode on GitHub Pages.',
+        bio: 'Exploring LOKR AI in interactive Demo Mode on GitHub Pages.',
         profile_image: null,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
@@ -214,15 +236,15 @@ export const api = {
 
   // Users & Profile
   async getProfile(): Promise<{ user: User; stats: UserStats }> {
-    if (getToken() === 'demo-guest-token') {
+    if (isDemoOrSocialToken()) {
       const convs = getDemoConversations();
       const totalMsgs = convs.reduce((acc, c) => acc + c.messages.length, 0);
       return {
         user: {
           id: 9999,
-          email: 'guest@lumiq.ai',
+          email: 'guest@lokr.ai',
           name: 'Guest Explorer',
-          bio: 'Exploring LUMIQ AI in interactive Demo Mode on GitHub Pages.',
+          bio: 'Exploring LOKR AI in interactive Demo Mode on GitHub Pages.',
           profile_image: null,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
@@ -237,12 +259,12 @@ export const api = {
   },
 
   async updateProfile(data: { name?: string; bio?: string }): Promise<User> {
-    if (getToken() === 'demo-guest-token') {
+    if (isDemoOrSocialToken()) {
       return {
         id: 9999,
-        email: 'guest@lumiq.ai',
+        email: 'guest@lokr.ai',
         name: data.name || 'Guest Explorer',
-        bio: data.bio || 'Exploring LUMIQ AI in interactive Demo Mode on GitHub Pages.',
+        bio: data.bio || 'Exploring LOKR AI in interactive Demo Mode on GitHub Pages.',
         profile_image: null,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
@@ -255,12 +277,12 @@ export const api = {
   },
 
   async uploadAvatar(file: File): Promise<User> {
-    if (getToken() === 'demo-guest-token') {
+    if (isDemoOrSocialToken()) {
       return {
         id: 9999,
-        email: 'guest@lumiq.ai',
+        email: 'guest@lokr.ai',
         name: 'Guest Explorer',
-        bio: 'Exploring LUMIQ AI in interactive Demo Mode on GitHub Pages.',
+        bio: 'Exploring LOKR AI in interactive Demo Mode on GitHub Pages.',
         profile_image: URL.createObjectURL(file),
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
@@ -275,7 +297,7 @@ export const api = {
   },
 
   async changePassword(data: any): Promise<{ message: string }> {
-    if (getToken() === 'demo-guest-token') {
+    if (isDemoOrSocialToken()) {
       return { message: 'Demo Mode: Password changed successfully.' };
     }
     return request('/users/change-password', {
@@ -286,7 +308,7 @@ export const api = {
 
   // Conversations
   async getConversations(searchTerm?: string): Promise<Conversation[]> {
-    if (getToken() === 'demo-guest-token') {
+    if (isDemoOrSocialToken()) {
       const convs = getDemoConversations();
       if (searchTerm) {
         const q = searchTerm.toLowerCase();
@@ -301,7 +323,7 @@ export const api = {
   },
 
   async getConversation(id: number): Promise<ConversationDetail> {
-    if (getToken() === 'demo-guest-token') {
+    if (isDemoOrSocialToken()) {
       const convs = getDemoConversations();
       const found = convs.find((c) => c.id === id);
       if (!found) throw new ApiError('Conversation not found', 404);
@@ -311,7 +333,7 @@ export const api = {
   },
 
   async createConversation(title?: string): Promise<Conversation> {
-    if (getToken() === 'demo-guest-token') {
+    if (isDemoOrSocialToken()) {
       const convs = getDemoConversations();
       const newConv: DemoConvData = {
         id: Date.now(),
@@ -331,7 +353,7 @@ export const api = {
   },
 
   async updateConversation(id: number, title: string): Promise<Conversation> {
-    if (getToken() === 'demo-guest-token') {
+    if (isDemoOrSocialToken()) {
       const convs = getDemoConversations();
       const c = convs.find((item) => item.id === id);
       if (c) {
@@ -349,7 +371,7 @@ export const api = {
   },
 
   async deleteConversation(id: number): Promise<{ message: string }> {
-    if (getToken() === 'demo-guest-token') {
+    if (isDemoOrSocialToken()) {
       let convs = getDemoConversations();
       convs = convs.filter((c) => c.id !== id);
       saveDemoConversations(convs);
@@ -361,7 +383,7 @@ export const api = {
   },
 
   async clearAllConversations(): Promise<{ message: string }> {
-    if (getToken() === 'demo-guest-token') {
+    if (isDemoOrSocialToken()) {
       saveDemoConversations([]);
       return { message: 'All conversations cleared' };
     }
@@ -372,7 +394,7 @@ export const api = {
 
   // Files
   async uploadFile(file: File): Promise<UploadedFileInfo> {
-    if (getToken() === 'demo-guest-token') {
+    if (isDemoOrSocialToken()) {
       return {
         file_name: file.name,
         file_url: URL.createObjectURL(file),
@@ -391,7 +413,7 @@ export const api = {
 
   // Settings
   async getSettings(): Promise<UserSettings> {
-    if (getToken() === 'demo-guest-token') {
+    if (isDemoOrSocialToken()) {
       try {
         const saved = localStorage.getItem(DEMO_SETTINGS_KEY);
         if (saved) return JSON.parse(saved);
@@ -408,7 +430,7 @@ export const api = {
   },
 
   async updateSettings(data: Partial<UserSettings>): Promise<UserSettings> {
-    if (getToken() === 'demo-guest-token') {
+    if (isDemoOrSocialToken()) {
       const current = await this.getSettings();
       const updated: UserSettings = {
         ...current,
@@ -426,7 +448,7 @@ export const api = {
   },
 
   async deleteAccount(password: string): Promise<{ message: string }> {
-    if (getToken() === 'demo-guest-token') {
+    if (isDemoOrSocialToken()) {
       localStorage.removeItem(DEMO_STORAGE_KEY);
       localStorage.removeItem(DEMO_SETTINGS_KEY);
       removeToken();
@@ -448,22 +470,25 @@ export const api = {
       file_type?: string | null;
       file_extracted_text?: string | null;
       enable_web_search?: boolean;
+      enable_image_generation?: boolean;
       model?: string;
+      client_timezone?: string;
     },
     callbacks: {
       onInit?: (data: { conversation_id: number; title: string; user_message_id: number }) => void;
       onStatus?: (message: string) => void;
       onSources?: (sources: Source[]) => void;
+      onImage?: (data: { image_url: string; prompt: string }) => void;
       onToken?: (token: string) => void;
-      onDone?: (data: { conversation_id: number; message_id: number; title: string; sources: Source[] }) => void;
+      onDone?: (data: { conversation_id: number; message_id: number; title: string; sources: Source[]; image_url?: string; file_type?: string }) => void;
       onError?: (error: string) => void;
     },
     signal?: AbortSignal
   ): Promise<void> {
     const token = getToken();
 
-    // In Demo Mode: simulate realistic streaming responses
-    if (token === 'demo-guest-token') {
+    // In Demo/Social Mode: simulate realistic streaming responses
+    if (isDemoOrSocialToken(token)) {
       return new Promise(async (resolve) => {
         const convs = getDemoConversations();
         const convId: number = payload.conversation_id || Date.now();
@@ -514,14 +539,60 @@ export const api = {
           await new Promise((r) => setTimeout(r, 400));
         }
 
-        callbacks.onStatus?.('Generating response...');
+        callbacks.onStatus?.('LOKR AI is thinking...');
 
-        let demoResponseText = `Thank you for your message! Here is an answer to your request:\n\n> "${payload.content}"\n\n### LUMIQ AI Capabilities Demo\nHere is a code example highlighting Markdown and syntax highlighting:\n\n\`\`\`typescript\n// Fast token streaming & context management\ninterface ChatState {\n  conversationId: number;\n  tokens: string[];\n  status: 'ready' | 'generating';\n}\n\nexport function calculateThroughput(tokens: number, seconds: number): number {\n  return Math.round(tokens / seconds);\n}\n\`\`\`\n\n- **Real-Time Streaming**: Tokens stream dynamically to your screen\n- **Markdown & Code**: Full formatting and syntax highlighting\n- **Web Search**: Dynamic citation cards and links\n- **Theme Support**: Seamless Light/Dark/System modes\n\n*Note*: You are in browser Demo Mode. To connect the real Groq AI backend and MySQL database, simply run **\`start-all.bat\`** on your machine or deploy the FastAPI backend!`;
+        const lowerTrim = payload.content.trim().toLowerCase();
+        const isPureGreeting = /^(hi|hello|hey|hey there|hi there|hello there|good morning|good afternoon|good evening|greetings|howdy)(\s+(lokr(\s+ai)?|assistant))?[!.\s]*$/i.test(payload.content.trim());
+        let demoResponseText = '';
 
-        if (payload.file_name) {
+        if (isPureGreeting) {
+          const isReturning = targetConv.messages.length > 2 || convs.length > 1;
+          let activeName: string | null = null;
+          try {
+            const rawUser = localStorage.getItem('lokr_user') || localStorage.getItem('user');
+            if (rawUser) {
+              const parsed = JSON.parse(rawUser);
+              activeName = parsed.name || null;
+            }
+          } catch {}
+
+          const prefName = extractPreferredName(activeName);
+          if (lowerTrim.includes('hello')) {
+            demoResponseText = prefName
+              ? `Hello ${prefName}! 👋\nNice to see you. How can I help you today?`
+              : `Hello! 👋 Nice to see you. How can I help you today?`;
+          } else if (lowerTrim.includes('hey')) {
+            demoResponseText = prefName
+              ? `Hey ${prefName}! 👋\nWhat can I help you with today?`
+              : `Hey! 👋 What can I help you with today?`;
+          } else if (lowerTrim.includes('good morning')) {
+            demoResponseText = prefName
+              ? `Good morning, ${prefName}! 👋\nHow can I help you today?`
+              : `Good morning! 👋 How can I help you today?`;
+          } else if (isReturning) {
+            demoResponseText = prefName
+              ? `Welcome back, ${prefName}! 👋\nWhat would you like to work on today?`
+              : `Welcome back! 👋 What would you like to work on today?`;
+          } else {
+            demoResponseText = prefName
+              ? `Hi ${prefName}! 👋\nHow can I help you today?`
+              : `Hi! 👋 How can I help you today?`;
+          }
+        } else if (/^(what('?s| is) your name|who are you)[?!.\s]*$/i.test(payload.content.trim())) {
+          demoResponseText = "I'm LOKR AI, your AI assistant. How can I help you?";
+        } else if (/^(how are you|how'?re you)[?!.\s]*$/i.test(payload.content.trim())) {
+          demoResponseText = "I'm doing well, thank you for asking! How can I help you today?";
+        } else if (payload.file_name) {
           demoResponseText = `I have received and analyzed your document **${payload.file_name}**.\n\n### Document Summary\n- **Filename**: \`${payload.file_name}\`\n- **Status**: Processed successfully\n\nBased on your query: "${payload.content}", everything looks great! Feel free to ask specific questions about your document.`;
+        } else if (/\b(what time|current time|time now|today'?s date|date today|what day is today|what date is|time in|tomorrow'?s date|next monday)\b/i.test(payload.content)) {
+          const now = new Date();
+          const tz = payload.client_timezone || (typeof Intl !== 'undefined' ? Intl.DateTimeFormat().resolvedOptions().timeZone : 'Asia/Kolkata');
+          const timeStr = now.toLocaleTimeString('en-US', { timeZone: tz, hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true });
+          const dateStr = now.toLocaleDateString('en-US', { timeZone: tz, weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+          demoResponseText = `The current time is **${timeStr}** and today's date is **${dateStr}** (${tz}).`;
+        } else {
+          demoResponseText = `Thank you for your message! Here is an answer to your request:\n\n> "${payload.content}"\n\n### LOKR AI Capabilities Demo\nHere is a code example highlighting Markdown and syntax highlighting:\n\n\`\`\`typescript\n// Fast token streaming & context management\ninterface ChatState {\n  conversationId: number;\n  tokens: string[];\n  status: 'ready' | 'generating';\n}\n\nexport function calculateThroughput(tokens: number, seconds: number): number {\n  return Math.round(tokens / seconds);\n}\n\`\`\`\n\n- **Real-Time Streaming**: Tokens stream dynamically to your screen\n- **Markdown & Code**: Full formatting and syntax highlighting\n- **Web Search**: Dynamic citation cards and links\n- **Theme Support**: Seamless Light/Dark/System modes\n\n*Note*: You are in browser Demo Mode. To connect the real Groq AI backend and MySQL database, simply run **\`start-all.bat\`** on your machine or deploy the FastAPI backend!`;
         }
-
         const words = demoResponseText.split(/(\s+)/);
         for (const word of words) {
           if (signal?.aborted) break;
@@ -571,7 +642,10 @@ export const api = {
               'Content-Type': 'application/json',
               ...(token ? { Authorization: `Bearer ${token}` } : {}),
             },
-            body: JSON.stringify(payload),
+            body: JSON.stringify({
+              ...payload,
+              client_timezone: payload.client_timezone || (typeof Intl !== 'undefined' ? Intl.DateTimeFormat().resolvedOptions().timeZone : 'Asia/Kolkata'),
+            }),
             signal,
           });
         } catch (fetchErr: any) {
@@ -607,6 +681,8 @@ export const api = {
 
         const decoder = new TextDecoder('utf-8');
         let buffer = '';
+        let receivedTokens = false;
+        let receivedDone = false;
 
         while (true) {
           const { done, value } = await reader.read();
@@ -628,9 +704,13 @@ export const api = {
                   callbacks.onStatus?.(event.message);
                 } else if (event.type === 'sources') {
                   callbacks.onSources?.(event.sources);
+                } else if (event.type === 'image') {
+                  callbacks.onImage?.(event);
                 } else if (event.type === 'token') {
+                  receivedTokens = true;
                   callbacks.onToken?.(event.content);
                 } else if (event.type === 'done') {
+                  receivedDone = true;
                   callbacks.onDone?.(event);
                 } else if (event.type === 'error') {
                   callbacks.onError?.(event.message);
@@ -639,6 +719,20 @@ export const api = {
                 console.error('Error parsing SSE event:', parseErr, jsonStr);
               }
             }
+          }
+        }
+
+        // Safety fallback: If stream closed without receiving an explicit 'done' event
+        if (!receivedDone) {
+          if (receivedTokens) {
+            callbacks.onDone?.({
+              conversation_id: payload.conversation_id || Date.now(),
+              message_id: Date.now(),
+              title: payload.content.slice(0, 30) || 'Chat',
+              sources: [],
+            });
+          } else {
+            callbacks.onError?.("The AI stream closed unexpectedly before sending response tokens. Please check server logs.");
           }
         }
         resolve();

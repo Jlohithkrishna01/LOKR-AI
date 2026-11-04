@@ -46,16 +46,16 @@ export const Modal: React.FC<ModalProps> = ({
 
       {/* Modal Dialog Card */}
       <div
-        className={`relative w-full ${maxWidth} bg-white dark:bg-[#111827] rounded-2xl shadow-2xl border border-gray-200 dark:border-dark-border overflow-hidden z-10 animate-in fade-in zoom-in-95 duration-200`}
+        className={`relative w-full ${maxWidth} bg-white dark:bg-[#181818] rounded-2xl shadow-2xl border border-neutral-200 dark:border-neutral-800 overflow-hidden z-10 animate-in fade-in zoom-in-95 duration-200`}
       >
         {title && (
-          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-dark-border">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-100 dark:border-neutral-800">
+            <h3 className="text-base sm:text-lg font-semibold text-neutral-900 dark:text-white">
               {title}
             </h3>
             <button
               onClick={onClose}
-              className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-dark-card transition-colors"
+              className="p-1.5 rounded-lg text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-[#252525] transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
