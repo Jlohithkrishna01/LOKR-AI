@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: process.env.VITE_BASE_PATH || (process.env.GITHUB_ACTIONS ? '/Ai_App/' : '/'),
+  base: process.env.VITE_BASE_PATH || (process.env.GITHUB_REPOSITORY ? `/${process.env.GITHUB_REPOSITORY.split('/')[1]}/` : (process.env.GITHUB_ACTIONS ? '/LOKR-AI/' : '/')),
   plugins: [react()],
   server: {
     host: '0.0.0.0',
